@@ -22,6 +22,8 @@
 
     <input type="password" name="senha_usuario" placeholder="Senha" required><br><br>
 
+    <input type="password" name="confirmar_senha" placeholder="Confirmar senha" required><br><br>
+
     <button type="submit">Cadastrar</button>
 
 </form>

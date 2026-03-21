@@ -7,6 +7,11 @@ $email = $_POST['email_usuario'];
 $telefone = $_POST['telefone_usuario'];
 $data_nascimento = $_POST['data_nascimento'];
 
+if ($senha != $confirmar) {
+    echo "As senhas não coincidem";
+    exit();
+}
+
 $senha = password_hash($_POST['senha_usuario'], PASSWORD_DEFAULT);
 
 $sql = "INSERT INTO usuario 
