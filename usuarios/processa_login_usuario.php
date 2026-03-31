@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "conexao.php";
+include __DIR__ . '/../config/conexao.php';
 
 $username = $_POST['username'];
 $senha = $_POST['senha'];

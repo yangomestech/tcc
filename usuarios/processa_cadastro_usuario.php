@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-include __DIR__ . '/../conexao.php';
+include __DIR__ . '/../config/conexao.php';
 
 echo "<pre>";
 print_r($_POST);
