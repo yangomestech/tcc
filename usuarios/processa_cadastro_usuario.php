@@ -37,7 +37,7 @@ echo "<br>";
 echo "Erro do MySQL: " . $conn->error;
 
 if ($resultado === TRUE) {
-    echo "Cadastro realizado com sucesso!";
+    header("Location: dashboard.php");
 } else {
     echo "Erro MySQL: " . $conn->error;
 }
