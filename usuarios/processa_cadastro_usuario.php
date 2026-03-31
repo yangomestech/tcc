@@ -1,28 +1,35 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: cadastro_usuario.php');
+    exit;
+}
+
 include "conexao.php";
 
 $username = $_POST['username'];
 $nome = $_POST['nome_usuario'];
 $email = $_POST['email_usuario'];
-$telefone = $_POST['telefone_usuario'];
-$data_nascimento = $_POST['data_nascimento'];
+$senha = $_POST['senha_usuario'];
+$confirmar = $_POST['confirmar_senha'];
 
 if ($senha != $confirmar) {
     echo "As senhas não coincidem";
     exit();
 }
 
-$senha = password_hash($_POST['senha_usuario'], PASSWORD_DEFAULT);
+$senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
 $sql = "INSERT INTO usuario 
-(username, nome_usuario, email_usuario, telefone_usuario, data_nascimento, senha_usuario)
+(username, nome_usuario, email_usuario, senha_usuario)
 VALUES 
-('$username','$nome','$email','$telefone','$data_nascimento','$senha')";
+('$username','$nome','$email','$senhaHash')";
 
-if ($conn->query($sql) === TRUE) {
-    echo "Cadastro realizado com sucesso!<br>";
-    echo "<a href='login.php'>Ir para login</a>";
-} else {
-    echo "Erro: " . $conn->error;
+try {
+    if ($conn->query($sql) === TRUE) {
+        echo "Cadastro realizado com sucesso!<br>";
+        echo "<a href='login_usuario.php'>Ir para login</a>";
+    }
+} catch (Exception $e) {
+    echo "Erro real: " . $e->getMessage();
 }
 ?>
