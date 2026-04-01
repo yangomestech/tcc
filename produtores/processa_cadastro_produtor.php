@@ -1,5 +1,5 @@
 <?php
-include("../config/conexao.php");
+include __DIR__ . '/../config/conexao.php';
 
 // pegar dados
 $nome = $_POST['nome_produtor'];

@@ -8,7 +8,7 @@
 
 <h2>Cadastro de Produtor</h2>
 
-<form action="processa_cadastro.php" method="POST">
+<form action="processa_cadastro_produtor.php" method="POST">
 
     <input type="text" name="nome_produtor" placeholder="Nome completo" required><br><br>
 

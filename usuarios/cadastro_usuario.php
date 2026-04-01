@@ -195,6 +195,7 @@
 </form>
       <div class="links">
         <p>Já tem uma conta? <a href="login_usuario.php">Entrar</a></p>
+        <p><a href="/../tcc/tcc/produtores/cadastro_produtor.php">Sou produtor</a></p>
       </div>
     </div>
   </div>
