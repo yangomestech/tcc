@@ -2,13 +2,14 @@
 include __DIR__ . '/../config/conexao.php';
 
 // pegar dados
-$nome = $_POST['nome_produtor'];
-$cpf = $_POST['CPF_produtor'];
-$rg = $_POST['RG_produtor'];
-$email = $_POST['email_produtor'];
-$telefone = $_POST['telefone_produtor'];
-$senha = $_POST['senha_produtor'];
-$confirmar = $_POST['confirmar_senha'];
+$username = trim($_POST['username']);
+$nome = trim($_POST['nome_produtor']);
+$cpf = trim($_POST['CPF_produtor']);
+$rg = trim($_POST['RG_produtor']);
+$email = trim($_POST['email_produtor']);
+$telefone = trim($_POST['telefone_produtor']);
+$senha = trim($_POST['senha_produtor']);
+$confirmar = trim($_POST['confirmar_senha']);
 
 // validar senha
 if ($senha != $confirmar) {
@@ -19,8 +20,6 @@ if ($senha != $confirmar) {
 // criptografar senha
 $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
-// gerar username automaticamente (simples)
-$username = explode(" ", $nome)[0] . rand(100,999);
 
 // inserir no banco
 $sql = "INSERT INTO produtor 
@@ -28,9 +27,17 @@ $sql = "INSERT INTO produtor
 VALUES 
 ('$nome','$cpf','$rg','$email','$telefone','$senha_hash','$username')";
 
-if (mysqli_query($conn, $sql)) {
-    echo "Cadastro realizado com sucesso! <a href='login_produtor.php'>Fazer login</a>";
+echo "SQL gerado:<br>";
+echo $sql . "<br><br>";
+
+$resultado = $conn->query($sql);
+var_dump($resultado);
+echo "<br>";
+echo "Erro do MySQL: " . $conn->error;
+
+if ($resultado === TRUE) {
+    header("Location: dashboard.php");
 } else {
-    echo "Erro: " . mysqli_error($conn);
+    echo "Erro MySQL: " . $conn->error;
 }
 ?>
