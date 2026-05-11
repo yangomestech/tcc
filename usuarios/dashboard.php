@@ -37,8 +37,16 @@ header {
 }
 
 .logo {
-  font-size: 24px;
+  font-size: 40px;
   font-weight: 600;
+}
+
+.roxo {
+  color: rgba(198, 12, 198, 0.92);
+}
+
+.laranja {
+  color: #f97316;
 }
 
 nav a {
@@ -48,7 +56,7 @@ nav a {
 }
 
 nav a:hover {
-  color: white;
+  color: orange;
 }
 
 /* HERO */
@@ -61,6 +69,7 @@ nav a:hover {
 
 .hero-text {
   max-width: 500px;
+
 }
 
 .hero h1 {
@@ -80,6 +89,9 @@ nav a:hover {
   cursor: pointer;
   background: linear-gradient(90deg, purple, orange);
   color: white;
+
+  transition: 0.3s;
+  display: inline-block;
 }
 
 .hero img {
@@ -99,9 +111,17 @@ nav a:hover {
   flex: 1;
   padding: 12px;
   border-radius: 10px;
-  border: none;
+  border: 2px solid transparent;
   background: #111;
   color: white;
+
+  transition: 0.3s;
+}
+
+.search input:focus {
+  outline: none;
+  border: 2px solid purple;
+  box-shadow: 0 0 15px rgba(128, 0, 128, 0.8);
 }
 
 /* EVENTOS */
@@ -158,7 +178,18 @@ nav a:hover {
   padding: 20px;
   text-align: center;
   border-radius: 10px;
+  
 }
+
+
+.style-card {
+  background: #111;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
 
 /* FOOTER */
 footer {
@@ -174,7 +205,9 @@ footer {
 <body>
 
 <header>
-  <div class="logo">BEATSTREET</div>
+<div class="logo">
+  BEA<span class="roxo">T</span>S<span class="laranja">T</span>REET
+</div>
   <nav>
     <a href="#">Início</a>
     <a href="#">Eventos</a>
@@ -250,6 +283,8 @@ footer {
 <footer>
   <p>© 2026 BeatStreet - Todos os direitos reservados</p>
 </footer>
+
+<script src="js/dashboard.js"></script>
 
 </body>
 </html>

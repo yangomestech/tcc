@@ -1,12 +1,13 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['id_usuario'])){
-    header("Location: login.php");
+if (!isset($_SESSION['id_produtor'])) {
+    header("Location: login_produtor.php");
     exit();
 }
-?>
 
+$username = $_SESSION['username_produtor'] ?? 'Produtor';
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -28,7 +29,6 @@ body {
   color: #fff;
 }
 
-/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
@@ -51,7 +51,6 @@ nav a:hover {
   color: white;
 }
 
-/* HERO */
 .hero {
   display: flex;
   align-items: center;
@@ -87,7 +86,6 @@ nav a:hover {
   border-radius: 20px;
 }
 
-/* BUSCA */
 .search {
   margin: 40px auto;
   width: 80%;
@@ -104,7 +102,6 @@ nav a:hover {
   color: white;
 }
 
-/* EVENTOS */
 .section {
   padding: 40px 60px;
 }
@@ -145,7 +142,6 @@ nav a:hover {
   color: white;
 }
 
-/* ESTILOS */
 .styles {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -160,14 +156,12 @@ nav a:hover {
   border-radius: 10px;
 }
 
-/* FOOTER */
 footer {
   text-align: center;
   padding: 20px;
   margin-top: 40px;
   background: #111;
 }
-
 </style>
 </head>
 
@@ -186,8 +180,8 @@ footer {
 
 <section class="hero">
   <div class="hero-text">
-    <h1>Encontre eventos de dança no Brasil</h1>
-    <p>Todos os eventos da cultura Hip Hop em um só lugar</p>
+    <h1>Bem-vindo, <?php echo htmlspecialchars($username); ?></h1>
+    <p>Gerencie seus eventos da cultura Hip Hop em um só lugar.</p>
     <button class="btn">Ver eventos</button>
     <button class="btn">Adicionar evento</button>
   </div>

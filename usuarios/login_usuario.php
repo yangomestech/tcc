@@ -1,11 +1,15 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Login - BeatStreet</title>
 
-  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------- -->
 
   <style>
     * {
@@ -27,7 +31,6 @@
       width: 100%;
     }
 
-    /* LADO ESQUERDO */
     .left {
       flex: 1;
       background: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819') no-repeat center/cover;
@@ -66,7 +69,6 @@
       opacity: 0.8;
     }
 
-    /* LADO DIREITO */
     .right {
       flex: 1;
       display: flex;
@@ -86,6 +88,17 @@
     .login-box h2 {
       text-align: center;
       margin-bottom: 30px;
+    }
+
+    .mensagem-erro {
+      background-color: rgba(255, 80, 80, 0.12);
+      color: #ff8a8a;
+      border: 1px solid rgba(255, 80, 80, 0.35);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      text-align: center;
     }
 
     .input-group {
@@ -139,7 +152,6 @@
       text-decoration: underline;
     }
 
-    /* RESPONSIVO */
     @media (max-width: 768px) {
       .left {
         display: none;
@@ -153,9 +165,10 @@
 </head>
 <body>
 
+<!-- --------------------------------------------------------------------------------------------------- -->
+ 
 <div class="container">
 
-  <!-- LADO ESQUERDO -->
   <div class="left">
     <div class="left-content">
       <div class="logo">BEATSTREET</div>
@@ -164,22 +177,33 @@
     </div>
   </div>
 
-  <!-- LADO DIREITO -->
   <div class="right">
     <div class="login-box">
       <h2>Entrar</h2>
 
+      <?php if (!empty($_SESSION['erro_login_usuario'])): ?>
+        <div class="mensagem-erro">
+          <?php echo htmlspecialchars($_SESSION['erro_login_usuario']); ?>
+        </div>
+        <?php unset($_SESSION['erro_login_usuario']); ?>
+      <?php endif; ?>
+
       <form action="processa_login_usuario.php" method="POST">
-        
         <div class="input-group">
-      <input type="text" name="login" placeholder="Username ou E-mail" required>
+          <input
+            type="text"
+            name="login"
+            placeholder="Username ou E-mail"
+            required
+            value="<?php echo htmlspecialchars($_SESSION['login_antigo_usuario'] ?? ''); ?>"
+          >
         </div>
 
-      <div class="input-group">
-        <input type="password" name="senha" placeholder="Senha" required>
-      </div>
+        <div class="input-group">
+          <input type="password" name="senha" placeholder="Senha" required>
+        </div>
 
-      <button type="submit"class="btn">Entrar</button>
+        <button type="submit" class="btn">Entrar</button>
       </form>
 
       <div class="links">
@@ -193,3 +217,4 @@
 
 </body>
 </html>
+<?php unset($_SESSION['login_antigo_usuario']); ?>

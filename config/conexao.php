@@ -1,8 +1,8 @@
 <?php
 
-$host = "localhost";
+$host = "db";
 $user = "root";
-$pass = "";
+$pass = "root";
 $db = "tcc";
 
 $conn = new mysqli($host, $user, $pass, $db);

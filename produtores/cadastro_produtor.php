@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -26,7 +29,6 @@
       width: 100%;
     }
 
-    /* LADO ESQUERDO */
     .left {
       flex: 1;
       background: url('https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf') no-repeat center/cover;
@@ -66,7 +68,6 @@
       opacity: 0.8;
     }
 
-    /* LADO DIREITO */
     .right {
       flex: 1;
       display: flex;
@@ -88,8 +89,19 @@
       margin-bottom: 25px;
     }
 
+    .mensagem-erro {
+      background-color: rgba(255, 80, 80, 0.12);
+      color: #ff8a8a;
+      border: 1px solid rgba(255, 80, 80, 0.35);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      text-align: center;
+    }
+
     .input-group {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .input-group input {
@@ -140,7 +152,6 @@
       text-decoration: underline;
     }
 
-    /* RESPONSIVO */
     @media (max-width: 768px) {
       .left {
         display: none;
@@ -156,7 +167,6 @@
 
 <div class="container">
 
-  <!-- ESQUERDA -->
   <div class="left">
     <div class="left-content">
       <div class="logo">BEATSTREET</div>
@@ -165,36 +175,42 @@
     </div>
   </div>
 
-    
-  <!-- DIREITA -->
   <div class="right">
     <div class="signup-box">
       <h2>Criar conta</h2>
-<form action="processa_cadastro_produtor.php" method="POST">
+
+      <?php if (!empty($_SESSION['erro_cadastro_produtor'])): ?>
+        <div class="mensagem-erro">
+          <?php echo htmlspecialchars($_SESSION['erro_cadastro_produtor']); ?>
+        </div>
+        <?php unset($_SESSION['erro_cadastro_produtor']); ?>
+      <?php endif; ?>
+
+      <form action="processa_cadastro_produtor.php" method="POST">
         <div class="input-group">
           <input type="text" name="username" placeholder="Username" required>
         </div>
 
         <div class="input-group">
-          <input type="text" name="nome_produtor" placeholder="Nome completo" required><br><br>
+          <input type="text" name="nome_produtor" placeholder="Nome completo" required>
         </div>
 
         <div class="input-group">
-          <input type="email" name="email_produtor" placeholder="Email" required><br><br>
+          <input type="email" name="email_produtor" placeholder="Email" required>
         </div>
 
         <div class="input-group">
-          <input type="tel" name="telefone_produtor" placeholder="Telefone" required><br><br>
+          <input type="tel" name="telefone_produtor" placeholder="Telefone" required>
         </div>
 
         <div class="input-group">
-          <input type="text" name="CPF_produtor" placeholder="CPF (somente números)" pattern="\d{11}" required><br><br>
+          <input type="text" name="CPF_produtor" placeholder="CPF (somente números)" pattern="\d{11}" required>
         </div>
-        
+
         <div class="input-group">
-          <input type="text" name="RG_produtor" placeholder="RG" required><br><br>
+          <input type="text" name="RG_produtor" placeholder="RG" required>
         </div>
-      
+
         <div class="input-group">
           <input type="password" name="senha_produtor" placeholder="Senha" required>
         </div>
@@ -203,11 +219,12 @@
           <input type="password" name="confirmar_senha" placeholder="Confirmar senha" required>
         </div>
 
-      <button type="submit" class="submit">Cadastrar</button>
-</form>
+        <button type="submit" class="submit">Cadastrar</button>
+      </form>
+
       <div class="links">
         <p>Já tem uma conta? <a href="login_produtor.php">Entrar</a></p>
-        <p><a href="/../tcc/tcc/usuarios/cadastro_usuario.php">Sou usuário</a></p>
+        <p><a href="/usuarios/cadastro_usuario.php">Sou usuário</a></p>
       </div>
     </div>
   </div>
