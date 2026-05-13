@@ -215,8 +215,7 @@ INSERT INTO `logs` (`id_log`, `id_usuario`, `tipo_acao`, `descricao`, `ip_usuari
 (76, NULL, 'LOGIN_FALHA', 'Falha no login: usuário ou e-mail não encontrado', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:03:02'),
 (77, NULL, 'LOGIN_FALHA', 'Falha no login: usuário ou e-mail não encontrado', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:08:13'),
 (78, 10, 'LOGIN_BLOQUEADO', 'Usuário bloqueado temporariamente por excesso de tentativas', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:08:20'),
-(79, 11, 'LOGIN_FALHA', 'Falha no login: senha incorreta', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:09:04'),
-(80, 11, 'LOGIN_SUCESSO', 'Usuário autenticado com sucesso', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:09:14');
+(79, 11, 'LOGIN_FALHA', 'Falha no login: senha incorreta', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0', '2026-04-13 22:09:04');
 
 -- --------------------------------------------------------
 
