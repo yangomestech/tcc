@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Cadastro - BeatStreet</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/styleLoginCadastro.css">
 </head>
 <body>
 
