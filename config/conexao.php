@@ -4,9 +4,15 @@ $user = "root";
 $pass = "root";
 $db = "tcc";
 
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("Erro na conexão: " . $conn->connect_error);
+try {
+    // Cria a conexão usando PDO
+    $conn = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
+    
+    // Configura o PDO para disparar exceções (Isso faz o bloco try/catch do cadastro funcionar perfeitamente)
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+} catch (PDOException $e) {
+    // Se der erro, para o sistema e avisa
+    die("Erro de conexão. A cena está temporariamente fora do ar. :( " . $e->getMessage());
 }
-$conn->set_charset("utf8mb4");
 ?>

@@ -58,7 +58,7 @@ $username = $_SESSION['username'] ?? 'Usuário';
   </form>
 
   <nav class="nav-links">
-    <a href="#">Criar evento</a>
+    <a href="../viewscadastro-evento.php">Criar evento</a>
     <a href="#">Meus eventos</a>
     <a href="../index.php?action=logout" class="logout-btn">Sair</a>
   </nav>
@@ -68,10 +68,6 @@ $username = $_SESSION['username'] ?? 'Usuário';
   <div class="hero-text">
     <h1>Bem-vindo <?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></h1>
     <p>Todos os eventos da cultura Hip Hop em um só lugar</p>
-    <div class="hero-actions">
-      <button class="btn">Meus eventos</button>
-      <button class="btn">Adicionar evento</button>
-    </div>
   </div>
 </section>
 
@@ -105,7 +101,6 @@ $username = $_SESSION['username'] ?? 'Usuário';
   </div>
   <div class="carousel-indicators"></div>
 </section>
-
 
 <section class="section">
   <h2>Eventos próximos</h2>

@@ -31,33 +31,39 @@ if ($senha !== $confirmar) {
     exit;
 }
 
-// Verifica duplicidade
-$sqlVerifica = "SELECT id_usuario, username, email_usuario FROM usuario WHERE username = ? OR email_usuario = ?";
+// Verifica duplicidade usando PDO
+$sqlVerifica = "SELECT id_usuario, username, email_usuario FROM usuario WHERE username = :username OR email_usuario = :email";
 $stmtVerifica = $conn->prepare($sqlVerifica);
-$stmtVerifica->bind_param("ss", $username, $email);
-$stmtVerifica->execute();
-$resultVerifica = $stmtVerifica->get_result();
+$stmtVerifica->execute([
+    ':username' => $username,
+    ':email' => $email
+]);
 
-if ($resultVerifica->num_rows > 0) {
-    $existente = $resultVerifica->fetch_assoc();
+$existente = $stmtVerifica->fetch(PDO::FETCH_ASSOC);
+
+if ($existente) {
     if ($existente['username'] === $username) {
         $_SESSION['erro_cadastro'] = "Este username já está em uso.";
     } else {
         $_SESSION['erro_cadastro'] = "Este e-mail já está cadastrado.";
     }
-    $stmtVerifica->close();
     header("Location: ../views/cadastro.php");
     exit;
 }
-$stmtVerifica->close();
 
-// Insere Usuário
+// Insere Usuário usando PDO
 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-$sql = "INSERT INTO usuario (username, nome_usuario, email_usuario, senha_usuario) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO usuario (username, nome_usuario, email_usuario, senha_usuario) VALUES (:username, :nome, :email, :senha)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $username, $nome, $email, $senhaHash);
 
-if ($stmt->execute()) {
+$sucesso = $stmt->execute([
+    ':username' => $username,
+    ':nome' => $nome,
+    ':email' => $email,
+    ':senha' => $senhaHash
+]);
+
+if ($sucesso) {
     $_SESSION['sucesso_login'] = "Cadastro realizado com sucesso. Faça login.";
     header("Location: ../views/login.php");
     exit;

@@ -17,18 +17,20 @@ if (empty($login) || empty($senha)) {
     exit();
 }
 
+// Consulta usando PDO
 $sql = "SELECT id_usuario, username, email_usuario, senha_usuario, tentativas_login, bloqueado_ate 
         FROM usuario 
-        WHERE username = ? OR email_usuario = ?";
+        WHERE username = :login OR email_usuario = :login_email";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $login, $login);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt->execute([
+    ':login' => $login,
+    ':login_email' => $login
+]);
 
-if ($result->num_rows > 0) {
-    $usuario = $result->fetch_assoc();
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if ($usuario) {
     if (!empty($usuario['bloqueado_ate']) && strtotime($usuario['bloqueado_ate']) > time()) {
         $_SESSION['erro_login'] = "Muitas tentativas de login. Tente novamente mais tarde.";
         header("Location: ../views/login.php");
@@ -36,11 +38,10 @@ if ($result->num_rows > 0) {
     }
 
     if (password_verify($senha, $usuario['senha_usuario'])) {
-        $sqlReset = "UPDATE usuario SET tentativas_login = 0, bloqueado_ate = NULL WHERE id_usuario = ?";
+        // Reset de tentativas usando PDO
+        $sqlReset = "UPDATE usuario SET tentativas_login = 0, bloqueado_ate = NULL WHERE id_usuario = :id";
         $stmtReset = $conn->prepare($sqlReset);
-        $stmtReset->bind_param("i", $usuario['id_usuario']);
-        $stmtReset->execute();
-        $stmtReset->close();
+        $stmtReset->execute([':id' => $usuario['id_usuario']]);
 
         session_regenerate_id(true); 
 
@@ -53,18 +54,22 @@ if ($result->num_rows > 0) {
     } else {
         $novaTentativa = (int)$usuario['tentativas_login'] + 1;
         if ($novaTentativa >= 5) {
-            $sqlBloqueio = "UPDATE usuario SET tentativas_login = ?, bloqueado_ate = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE id_usuario = ?";
+            // Bloqueio usando PDO
+            $sqlBloqueio = "UPDATE usuario SET tentativas_login = :tentativas, bloqueado_ate = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE id_usuario = :id";
             $stmtBloqueio = $conn->prepare($sqlBloqueio);
-            $stmtBloqueio->bind_param("ii", $novaTentativa, $usuario['id_usuario']);
-            $stmtBloqueio->execute();
-            $stmtBloqueio->close();
+            $stmtBloqueio->execute([
+                ':tentativas' => $novaTentativa,
+                ':id' => $usuario['id_usuario']
+            ]);
             $_SESSION['erro_login'] = "Muitas tentativas de login. Tente novamente em 10 minutos.";
         } else {
-            $sqlTentativa = "UPDATE usuario SET tentativas_login = ? WHERE id_usuario = ?";
+            // Atualiza tentativa usando PDO
+            $sqlTentativa = "UPDATE usuario SET tentativas_login = :tentativas WHERE id_usuario = :id";
             $stmtTentativa = $conn->prepare($sqlTentativa);
-            $stmtTentativa->bind_param("ii", $novaTentativa, $usuario['id_usuario']);
-            $stmtTentativa->execute();
-            $stmtTentativa->close();
+            $stmtTentativa->execute([
+                ':tentativas' => $novaTentativa,
+                ':id' => $usuario['id_usuario']
+            ]);
             $_SESSION['erro_login'] = "Credenciais incorretas."; 
         }
         header("Location: ../views/login.php");
@@ -75,7 +80,4 @@ if ($result->num_rows > 0) {
     header("Location: ../views/login.php");
     exit();
 }
-
-$stmt->close();
-$conn->close();
 ?>
