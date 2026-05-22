@@ -11,9 +11,15 @@ services:
   db:
     image: mariadb:10.11
     restart: always
+    # Exponha no localhost:3306 para que o Tailscale possa enxergar
+    ports:
+      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      # NUNCA hardcode senhas. Use variáveis.
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: tcc
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./tcc.sql:/docker-entrypoint-initdb.d/init.sql
@@ -25,8 +31,8 @@ services:
       - "8081:80"
     environment:
       PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: root
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
 

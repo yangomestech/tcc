@@ -58,7 +58,7 @@ $username = $_SESSION['username'] ?? 'Usuário';
   </form>
 
   <nav class="nav-links">
-    <a href="../viewscadastro-evento.php">Criar evento</a>
+    <a href="../views/cadastro-evento.php">Criar evento</a>
     <a href="#">Meus eventos</a>
     <a href="../index.php?action=logout" class="logout-btn">Sair</a>
   </nav>
