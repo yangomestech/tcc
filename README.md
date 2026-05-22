@@ -11,38 +11,38 @@
 
 ## 📖 Sobre o Projeto
 
-[cite_start]O **BeatStreet** é uma plataforma web desenvolvida para centralizar e divulgar eventos da cultura Hip Hop, como Batalhas de Rima, Batalhas de Dança, Jams e Slams[cite: 52, 350]. [cite_start]O sistema foi pensado para atender à natureza comunitária e gratuita destes eventos, não envolvendo transações financeiras[cite: 51, 52]. 
+O **BeatStreet** é uma plataforma web desenvolvida para centralizar e divulgar eventos da cultura Hip Hop, como Batalhas de Rima, Batalhas de Dança, Jams e Slams. O sistema foi pensado para atender à natureza comunitária e gratuita destes eventos, não envolvendo transações financeiras.
 
-[cite_start]A plataforma permite que os utilizadores descubram eventos na sua região, interajam marcando presença ou favoritando, e confere aos organizadores a possibilidade de gerir a publicação dos seus próprios encontros culturais[cite: 351, 353].
+A plataforma permite que os utilizadores descubram eventos na sua região, interajam marcando presença ou favoritando, e confere aos organizadores a possibilidade de gerir a publicação dos seus próprios encontros culturais.
 
 ## ✨ Funcionalidades
 
 ### Para Utilizadores (Público Geral)
-- [cite_start]📝 **Registo e Autenticação:** Criação de conta e login seguro com palavras-passe encriptadas (Hash)[cite: 336, 351].
-- [cite_start]🔍 **Pesquisa e Exploração:** Feed dinâmico com os próximos eventos e filtros por região ou tipo[cite: 337, 351].
-- [cite_start]⭐ **Interação:** Possibilidade de "Marcar Presença" ou adicionar um evento aos "Favoritos".
-- [cite_start]🗺️ **Detalhes do Evento:** Visualização de informações de localização, horários, MCs, DJs e Estilos de Dança[cite: 145, 351].
+- 📝 **Registo e Autenticação:** Criação de conta e login seguro com palavras-passe encriptadas (Hash).
+- 🔍 **Pesquisa e Exploração:** Feed dinâmico com os próximos eventos e filtros por região ou tipo.
+- ⭐ **Interação:** Possibilidade de "Marcar Presença" ou adicionar um evento aos "Favoritos".
+- 🗺️ **Detalhes do Evento:** Visualização de informações de localização, horários, MCs, DJs e Estilos de Dança.
 
 ### Para Organizadores
-- [cite_start]➕ **Criação de Eventos:** Formulário dinâmico que se adapta ao tipo de evento escolhido (ex: categorias de dança só aparecem para Jams ou Batalhas de Dança)[cite: 339, 341].
-- [cite_start]💃 **Gestão de Estilos (All Styles):** Seleção de múltiplos estilos (Breaking, Popping, Locking, etc.) para eventos de dança[cite: 53, 55, 63].
+- ➕ **Criação de Eventos:** Formulário dinâmico que se adapta ao tipo de evento escolhido (ex: categorias de dança só aparecem para Jams ou Batalhas de Dança).
+- 💃 **Gestão de Estilos (All Styles):** Seleção de múltiplos estilos (Breaking, Popping, Locking, etc.) para eventos de dança.
 
 ## 🛠️ Tecnologias e Arquitetura
 
-[cite_start]O projeto foi construído utilizando as seguintes tecnologias e boas práticas:
+O projeto foi construído utilizando as seguintes tecnologias e boas práticas:
 
-- [cite_start]**Backend:** PHP 8.2 (Vanilla)[cite: 277, 351].
-- [cite_start]**Base de Dados:** MySQL / MariaDB[cite: 139, 351].
-- [cite_start]**Frontend:** HTML5, CSS3, JavaScript (Vanilla DOM Manipulation)[cite: 340, 351].
-- [cite_start]**Infraestrutura:** Docker e Docker Compose (Imagem oficial `php:8.2-apache`)[cite: 292, 351].
+- **Backend:** PHP 8.2 (Vanilla).
+- **Base de Dados:** MySQL / MariaDB.
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla DOM Manipulation).
+- **Infraestrutura:** Docker e Docker Compose (Imagem oficial `php:8.2-apache`).
 - **Segurança & Boas Práticas:**
-  - [cite_start]**PDO (PHP Data Objects):** Utilização estrita de *Prepared Statements* com parâmetros nomeados (`:campo`) para total prevenção contra ataques de *SQL Injection*[cite: 45, 244].
-  - [cite_start]**Transações ACID:** Uso de `beginTransaction()` e `commit()` para garantir a integridade dos dados na criação complexa de eventos (Eventos ↔ Estilos de Dança)[cite: 70, 196].
-  - [cite_start]**Normalização da Base de Dados:** Estrutura relacional robusta (1:N e N:N) para garantir consistência referencial (uso rigoroso de restrições `ON DELETE CASCADE`)[cite: 66, 128, 136].
+  - **PDO (PHP Data Objects):** Utilização estrita de *Prepared Statements* com parâmetros nomeados (`:campo`) para total prevenção contra ataques de *SQL Injection*.
+  - **Transações ACID:** Uso de `beginTransaction()` e `commit()` para garantir a integridade dos dados na criação complexa de eventos (Eventos ↔ Estilos de Dança).
+  - **Normalização da Base de Dados:** Estrutura relacional robusta (1:N e N:N) para garantir consistência referencial (uso rigoroso de restrições `ON DELETE CASCADE`).
 
 ## 🚀 Como Executar o Projeto (Localmente)
 
-[cite_start]Graças ao ambiente em contentores, correr o projeto na sua máquina requer apenas o Docker instalado[cite: 284, 351].
+Graças ao ambiente em contentores, correr o projeto na sua máquina requer apenas o Docker instalado.
 
 1. **Clone o repositório:**
    ```bash
