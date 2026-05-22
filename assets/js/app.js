@@ -158,3 +158,4 @@ document.addEventListener('click', (e) => {
         startAutoPlay();
     }
 }); 
+

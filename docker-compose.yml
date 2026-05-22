@@ -36,5 +36,6 @@ services:
     depends_on:
       - db
 
+
 volumes:
   mysql_data:
