@@ -37,7 +37,7 @@ if ($usuario) {
         exit();
     }
 
-    if (password_verify($senha, $usuario['senha_usuario'])) {
+if (password_verify($senha, $usuario['senha_usuario'])) {
         // Reset de tentativas usando PDO
         $sqlReset = "UPDATE usuario SET tentativas_login = 0, bloqueado_ate = NULL WHERE id_usuario = :id";
         $stmtReset = $conn->prepare($sqlReset);
@@ -48,8 +48,12 @@ if ($usuario) {
         unset($_SESSION['login_antigo']);
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['username']   = $usuario['username'];
+        
+        // 👇 ADICIONADO: Salva o e-mail na sessão para o menu dropdown
+        $_SESSION['email_usuario'] = $usuario['email_usuario']; 
 
-        header("Location: ../index.php"); 
+        // 👇 ATUALIZADO: Redireciona para o Controlador do Dashboard respeitando a arquitetura MVC
+        header("Location: dashboard-process.php"); 
         exit();
     } else {
         $novaTentativa = (int)$usuario['tentativas_login'] + 1;

@@ -429,3 +429,180 @@ footer {
 .nav-links .logout-btn {
   color: #ff8a8a;
 }
+
+/* --- Novo Menu Nav Desktop (Dark Theme) --- */
+.nav-desktop {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-item:hover {
+    color: #fff;
+}
+
+/* --- Botão do Menu de Usuário --- */
+.user-menu-container {
+    position: relative;
+}
+
+.user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 20px;
+    padding: 4px 6px 4px 10px;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.user-profile-btn * {
+    pointer-events: none;
+}
+
+.user-profile-btn:hover {
+    background: #222;
+    border-color: #666;
+}
+
+.user-initials {
+    background-color: #333;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid #555;
+}
+
+/* --- Dropdown Dark --- */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background-color: #111;
+    width: 260px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    display: none; 
+    z-index: 9999; 
+    overflow: hidden;
+    color: #eee;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 15px;
+    gap: 15px;
+    border-bottom: 1px solid #222;
+}
+
+.user-initials-large {
+    background-color: #222;
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border: 1px solid #444;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info strong {
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.user-info span {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+/* --- Lista de Ações (Dark) --- */
+.dropdown-list {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.dropdown-list li {
+    padding: 0;
+}
+
+.dropdown-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-list a:hover {
+    background-color: #222;
+    color: #fff;
+}
+
+.dropdown-list a svg {
+    color: #888;
+    transition: color 0.2s;
+}
+
+.dropdown-list a:hover svg {
+    color: #0099ff; /* Azul sutil para manter o feedback visual ao passar o mouse */
+}
+
+.dropdown-list .divider {
+    height: 1px;
+    background-color: #222;
+    margin: 8px 0;
+}
+
+/* Estilo específico para o botão de sair */
+.dropdown-list a.logout-link svg {
+    color: #ff4757;
+}
+
+.dropdown-list a.logout-link:hover {
+    color: #ff4757;
+    background-color: rgba(255, 71, 87, 0.1);
+}
+
+/* Força o cabeçalho a não cortar o menu dropdown */
+.header-sympla, .nav-links, .nav-desktop, .user-menu-container {
+    overflow: visible !important;
+}
+

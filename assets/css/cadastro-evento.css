@@ -1,0 +1,74 @@
+body { 
+    font-family: Arial, sans-serif; 
+    max-width: 800px; 
+    margin: 20px auto; 
+    padding: 20px; 
+}
+.form-group { 
+    margin-bottom: 15px; 
+}
+label { 
+    font-weight: bold; 
+    display: block; 
+    margin-bottom: 5px; 
+}
+input[type="text"], 
+input[type="time"], 
+input[type="date"], 
+select { 
+    width: 100%; 
+    padding: 8px; 
+    box-sizing: border-box; 
+}
+.checkbox-group label { 
+    display: inline-block; 
+    font-weight: normal; 
+    margin-right: 15px; 
+    margin-bottom: 5px; 
+}
+.btn-submit { 
+    background-color: #000; 
+    color: #fff; 
+    padding: 10px 20px; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 20px;
+}
+.btn-submit:hover { 
+    background-color: #333; 
+}
+hr { 
+    margin: 30px 0; 
+    border: 1px solid #ccc; 
+}
+.row-flex {
+    display: flex;
+    gap: 20px;
+}
+.flex-1 {
+    flex: 1;
+}
+.flex-2 {
+    flex: 2;
+}
+
+/* Transição suave para o bloco de dança */
+#bloco_estilos_danca { 
+    display: none; 
+    transition: all 0.3s ease; 
+}
+
+/* Estilos de mensagens de feedback */
+.msg-sucesso {
+    color: green; 
+    padding: 10px; 
+    border: 1px solid green; 
+    margin-bottom: 20px;
+}
+.msg-erro {
+    color: red; 
+    padding: 10px; 
+    border: 1px solid red; 
+    margin-bottom: 20px;
+}

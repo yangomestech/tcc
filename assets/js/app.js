@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {// Lógica do Dropdown de Localização
+document.addEventListener("DOMContentLoaded", () => {
+
+//Dropdown de localização
 const locationBox = document.querySelector('.location-box');
 const locationMenu = document.getElementById('locationMenu');
 const locationText = document.getElementById('locationSelectedText');
