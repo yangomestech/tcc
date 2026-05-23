@@ -1,5 +1,5 @@
 <?php
-$host = "db";
+$host = "100.98.177.14";
 $user = "root";
 $pass = "root";
 $db = "tcc";

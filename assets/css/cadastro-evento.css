@@ -1,74 +1,378 @@
-body { 
-    font-family: Arial, sans-serif; 
-    max-width: 800px; 
-    margin: 20px auto; 
-    padding: 20px; 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
-.form-group { 
-    margin-bottom: 15px; 
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    min-height: 100vh;
 }
-label { 
-    font-weight: bold; 
-    display: block; 
-    margin-bottom: 5px; 
+
+/* ========================================= */
+/* NAVBAR (CABEÇALHO) SIMPLIFICADO           */
+/* ========================================= */
+.roxo { color: rgba(198, 12, 198, 0.92); }
+.laranja { color: #f97316; }
+
+.header-sympla {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #000;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow: visible !important;
 }
+
+.header-sympla .logo {
+    font-size: 30px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none; /* Tira o sublinhado do link */
+    color: #fff; /* Garante que o texto seja branco */
+}
+
+.nav-links, .nav-desktop {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    white-space: nowrap;
+    overflow: visible !important;
+}
+
+.user-menu-container {
+    position: relative;
+    overflow: visible !important;
+}
+
+.user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 20px;
+    padding: 4px 6px 4px 10px;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.user-profile-btn * {
+    pointer-events: none;
+}
+
+.user-profile-btn:hover {
+    background: #222;
+    border-color: #666;
+}
+
+.user-initials {
+    background-color: #333;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid #555;
+}
+
+/* Dropdown de Usuário */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background-color: #111;
+    width: 260px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    display: none; 
+    z-index: 9999; 
+    color: #eee;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 15px;
+    gap: 15px;
+    border-bottom: 1px solid #222;
+}
+
+.user-initials-large {
+    background-color: #222;
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border: 1px solid #444;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info strong {
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.user-info span {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.dropdown-list {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.dropdown-list li {
+    padding: 0;
+}
+
+.dropdown-list a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-list a:hover {
+    background-color: #222;
+    color: #fff;
+}
+
+.dropdown-list a svg {
+    color: #888;
+    transition: color 0.2s;
+}
+
+.dropdown-list a:hover svg {
+    color: #0099ff;
+}
+
+.dropdown-list .divider {
+    height: 1px;
+    background-color: #222;
+    margin: 8px 0;
+}
+
+.dropdown-list a.logout-link svg {
+    color: #ff4757;
+}
+
+.dropdown-list a.logout-link:hover {
+    color: #ff4757;
+    background-color: rgba(255, 71, 87, 0.1);
+}
+
+/* ========================================= */
+/* CORPO E FORMULÁRIO DE CADASTRO            */
+/* ========================================= */
+
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #0a0a0a; 
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #1a1a1a;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+p.subtitle {
+    color: #888888;
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 14px;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+    color: #cccccc;
+    font-size: 14px;
+}
+
 input[type="text"], 
 input[type="time"], 
 input[type="date"], 
-select { 
-    width: 100%; 
-    padding: 8px; 
-    box-sizing: border-box; 
+select {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: #121212;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
 }
-.checkbox-group label { 
-    display: inline-block; 
-    font-weight: normal; 
-    margin-right: 15px; 
-    margin-bottom: 5px; 
+
+input::placeholder {
+    color: #555555;
 }
-.btn-submit { 
-    background-color: #000; 
-    color: #fff; 
-    padding: 10px 20px; 
-    border: none; 
-    cursor: pointer; 
-    font-size: 16px; 
+
+input:focus, 
+select:focus {
+    border-color: #f75c03;
+    box-shadow: 0 0 0 3px rgba(247, 92, 3, 0.15);
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 400;
+    margin-right: 20px;
+    margin-bottom: 12px;
+    color: #aaaaaa;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: #f75c03;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.btn-submit {
+    background-color: #f75c03; 
+    color: #ffffff;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
     margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
-.btn-submit:hover { 
-    background-color: #333; 
+
+.btn-submit:hover {
+    background-color: #d94f02;
 }
-hr { 
-    margin: 30px 0; 
-    border: 1px solid #ccc; 
+
+.btn-submit:active {
+    transform: scale(0.98);
 }
+
+hr {
+    margin: 40px 0;
+    border: none;
+    border-top: 1px solid #222222;
+}
+
 .row-flex {
     display: flex;
     gap: 20px;
 }
-.flex-1 {
-    flex: 1;
-}
-.flex-2 {
-    flex: 2;
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+
+#bloco_estilos_danca {
+    display: none;
 }
 
-/* Transição suave para o bloco de dança */
-#bloco_estilos_danca { 
-    display: none; 
-    transition: all 0.3s ease; 
+.msg-sucesso, .msg-erro {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
 }
 
-/* Estilos de mensagens de feedback */
 .msg-sucesso {
-    color: green; 
-    padding: 10px; 
-    border: 1px solid green; 
-    margin-bottom: 20px;
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
 }
+
 .msg-erro {
-    color: red; 
-    padding: 10px; 
-    border: 1px solid red; 
-    margin-bottom: 20px;
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+/* Responsividade Mobile */
+@media (max-width: 600px) {
+    .header-sympla {
+        padding: 15px 20px;
+    }
+    
+    .row-flex {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .page-wrapper {
+        padding: 20px 10px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
 }
