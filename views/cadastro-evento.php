@@ -3,30 +3,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica login (descomente na versão final se necessário)
-// if (!isset($_SESSION['id_usuario'])) {
-//     header("Location: '/../views/login.php"); 
-//     exit();
-// }
-
 $username = $_SESSION['username'] ?? 'Usuário';
-
-// Lógica para pegar as iniciais do usuário
 $words = explode(" ", trim($username));
-$initials = "";
-if (count($words) >= 2) {
-    $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-} else {
-    $initials = strtoupper(substr($words[0], 0, 2));
-}
-
-// E-mail fallback
+$initials = count($words) >= 2 ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1)) : strtoupper(substr($words[0], 0, 2));
 $email = $_SESSION['email_usuario'] ?? 'usuario@beatstreet.com';
 
-// Mock das variáveis de formulário (remova/adapte no seu código real)
+// Fallback de variáveis do controlador (para não quebrar a view se acessada diretamente)
 $mensagem = $mensagem ?? "";
-$tipos_evento = $tipos_evento ?? [['id_tipo'=>1, 'nome_tipo'=>'Batalha de Rima'], ['id_tipo'=>2, 'nome_tipo'=>'Jam de Breaking']];
-$estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Breaking'], ['id_estilo_danca'=>2, 'nome_estilo'=>'Popping']];
+$tipos_evento = $tipos_evento ?? [];
+$estilos_danca = $estilos_danca ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -39,11 +24,11 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
 <body>
 
     <header class="header-sympla">
-        <a href="../views/dashboard.php" class="logo">
+        <a href="../controllers/dashboard-process.php" class="logo">
             BEA<span class="roxo">T</span>S<span class="laranja">T</span>REET
         </a>
         
-        <nav class="nav-links nav-desktop">
+<nav class="nav-links nav-desktop">
             <div class="user-menu-container">
                 <button class="user-profile-btn" id="userMenuBtn">
                     <svg class="hamburger-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor"/></svg>
@@ -66,7 +51,7 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
                         
                         <li><a href="../controllers/evento-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento</a></li>
                         
-                        <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
+                        <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
                         
                         <li class="divider"></li>
                         
@@ -88,48 +73,40 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
 
             <?= $mensagem ?>
 
-            <form method="POST" action="">
+            <form method="POST" action="../controllers/evento-process.php" enctype="multipart/form-data">
+                
+                <h3 class="section-title"><span class="num">1</span> Informações Básicas</h3>
+                
+                <div class="form-group">
+                    <label>Imagem de divulgação (Opcional)</label>
+                    <div class="image-upload-box" id="image-preview-container">
+                        <input type="file" id="imagem_evento" name="imagem_evento" accept="image/png, image/jpeg, image/webp">
+                        <div class="upload-placeholder" id="upload-text">
+                            <svg viewBox="0 0 24 24" width="48" height="48"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" fill="currentColor"/></svg>
+                            <span>Clique ou arraste a imagem do cartaz aqui</span>
+                            <small style="color: #666; margin-top: 5px;">Formatos: JPEG, PNG. A imagem se ajustará automaticamente sem distorcer.</small>
+                        </div>
+                        <img id="preview-image" class="preview-image" src="" alt="Pré-visualização do Evento">
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="nome_evento">Nome do Evento: *</label>
                     <input type="text" id="nome_evento" name="nome_evento" placeholder="Ex: Batalha da Aldeia" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="id_tipo">Tipo de Evento: *</label>
+                    <label for="id_tipo">Classifique seu evento (Assunto): *</label>
                     <select id="id_tipo" name="id_tipo" required>
-                        <option value="">Selecione...</option>
+                        <option value="">Selecione um assunto...</option>
                         <?php foreach ($tipos_evento as $tipo): ?>
                             <option value="<?= $tipo['id_tipo'] ?>"><?= htmlspecialchars($tipo['nome_tipo']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="form-group row-flex">
-                    <div class="flex-1">
-                        <label for="data_evento">Data: *</label>
-                        <input type="date" id="data_evento" name="data_evento" required>
-                    </div>
-                    <div class="flex-1">
-                        <label for="horario_evento">Horário de Início: *</label>
-                        <input type="time" id="horario_evento" name="horario_evento" required>
-                    </div>
-                </div>
-
-                <hr>
-                <h3>Elementos da Cultura</h3>
-
-                <div class="form-group">
-                    <label for="mc_host">Mestre de Cerimônia (MC / Host):</label>
-                    <input type="text" id="mc_host" name="mc_host" placeholder="Quem vai conduzir?">
-                </div>
-
-                <div class="form-group">
-                    <label for="dj">DJ (Residente ou Convidado):</label>
-                    <input type="text" id="dj" name="dj" placeholder="Quem vai soltar os beats?">
-                </div>
-
                 <div class="form-group checkbox-group" id="bloco_estilos_danca">
-                    <label style="display: block; color: #fff; margin-bottom: 10px;">Estilos de Dança presentes no evento:</label>
+                    <label style="display: block; color: #fff; margin-bottom: 10px;">Quais estilos de dança estarão na roda? *</label>
                     <?php foreach ($estilos_danca as $estilo): ?>
                         <label>
                             <input type="checkbox" name="estilos[]" class="checkbox-estilo" value="<?= $estilo['id_estilo_danca'] ?>">
@@ -138,17 +115,45 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
                     <?php endforeach; ?>
                 </div>
 
-                <hr>
-                <h3>Localização</h3>
+                <h3 class="section-title"><span class="num">2</span> Data e Horário</h3>
+                <div class="form-group row-flex">
+                    <div class="flex-1">
+                        <label for="data_evento">Data de Início: *</label>
+                        <input type="date" id="data_evento" name="data_evento" required onclick="this.showPicker()">
+                    </div>
+                    <div class="flex-1">
+                        <label for="horario_evento">Horário de Início: *</label>
+                        <select id="horario_evento" name="horario_evento" required>
+                            </select>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><span class="num">3</span> Descrição do Evento</h3>
+                <div class="form-group">
+                    <label for="descricao">Conte mais detalhes sobre o evento: *</label>
+                    <textarea id="descricao" name="descricao" class="form-control" placeholder="Descreva as atrações, regras das batalhas, premiação ou como chegar no pico..." required></textarea>
+                </div>
 
                 <div class="form-group row-flex">
                     <div class="flex-1">
-                        <label for="cep">CEP:</label>
-                        <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000">
+                        <label for="mc_host">Mestre de Cerimônia (Host):</label>
+                        <input type="text" id="mc_host" name="mc_host" placeholder="Quem vai conduzir?">
                     </div>
                     <div class="flex-1">
-                        <label for="estado">Estado (UF):</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP">
+                        <label for="dj">DJ (Residente ou Convidado):</label>
+                        <input type="text" id="dj" name="dj" placeholder="Quem solta os beats?">
+                    </div>
+                </div>
+
+                <h3 class="section-title"><span class="num">4</span> Onde o seu evento vai acontecer?</h3>
+                <div class="form-group row-flex">
+                    <div class="flex-1">
+                        <label for="cep">CEP: *</label>
+                        <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000" required>
+                    </div>
+                    <div class="flex-1">
+                        <label for="estado">Estado (UF): *</label>
+                        <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP" required>
                     </div>
                     <div class="flex-2">
                         <label for="cidade">Cidade: *</label>
@@ -162,8 +167,8 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
                         <input type="text" id="rua" name="rua" required>
                     </div>
                     <div class="flex-1">
-                        <label for="numero">Número:</label>
-                        <input type="text" id="numero" name="numero" placeholder="Ex: S/N">
+                        <label for="numero">Número: *</label>
+                        <input type="text" id="numero" name="numero" placeholder="Ex: S/N" required>
                     </div>
                 </div>
 
@@ -173,12 +178,12 @@ $estilos_danca = $estilos_danca ?? [['id_estilo_danca'=>1, 'nome_estilo'=>'Break
                         <input type="text" id="bairro" name="bairro" required>
                     </div>
                     <div class="flex-1">
-                        <label for="complemento">Complemento (Referência):</label>
+                        <label for="complemento">Complemento (Opcional):</label>
                         <input type="text" id="complemento" name="complemento" placeholder="Praça, Pista de Skate...">
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Criar Evento</button>
+                <button type="submit" class="btn-submit">Publicar Evento</button>
             </form>
         </div>
     </main>

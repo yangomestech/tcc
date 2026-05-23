@@ -582,7 +582,7 @@ footer {
 }
 
 .dropdown-list a:hover svg {
-    color: #0099ff; /* Azul sutil para manter o feedback visual ao passar o mouse */
+    color: #7b2cbf; /* Roxo sutil para manter o feedback visual ao passar o mouse */
 }
 
 .dropdown-list .divider {
