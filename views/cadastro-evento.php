@@ -23,12 +23,15 @@ $estilos_danca = $estilos_danca ?? [];
 </head>
 <body>
 
-    <header class="header-sympla">
-        <a href="../controllers/dashboard-process.php" class="logo">
-            BEA<span class="roxo">T</span>S<span class="laranja">T</span>REET
-        </a>
-        
-<nav class="nav-links nav-desktop">
+<header class="header-sympla">
+        <div class="logo-group">
+            <a href="../controllers/dashboard-process.php" class="logo">
+                BEA<span class="roxo">T</span>S<span class="laranja">T</span>REET
+            </a>
+            <span class="producer-label">ÁREA DO PRODUTOR</span>
+        </div>
+
+        <nav class="nav-links nav-desktop">
             <div class="user-menu-container">
                 <button class="user-profile-btn" id="userMenuBtn">
                     <svg class="hamburger-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor"/></svg>

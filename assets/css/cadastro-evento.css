@@ -40,6 +40,21 @@ body {
     color: #fff; /* Garante que o texto seja branco */
 }
 
+.header-sympla .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-sympla .producer-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ccc;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+}
+
 .nav-links, .nav-desktop {
     display: flex;
     align-items: center;
