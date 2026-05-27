@@ -303,6 +303,24 @@ footer {
   color: #fff; /* Garante que o texto seja branco */
 }
 
+.header-sympla .logo a,
+.header-sympla .logo a:link,
+.header-sympla .logo a:visited,
+.header-sympla .logo a:hover,
+.header-sympla .logo a:active {
+  color: #ffffff !important;
+  text-decoration: none !important;
+  display: inline;
+}
+
+.header-sympla .logo .roxo {
+  color: rgba(198, 12, 198, 0.92) !important;
+}
+
+.header-sympla .logo .laranja {
+  color: #f97316 !important;
+}
+
 /* CONTAINER DA BUSCA */
 .search-sympla {
   display: flex;
