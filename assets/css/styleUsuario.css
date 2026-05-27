@@ -19,7 +19,7 @@ input:-webkit-autofill:active {
 
 /* Classes utilitárias para proporção de colunas flexíveis */
 .row-flex {
-    display: flex;
+    display: flex; 
     gap: 15px;
 }
 

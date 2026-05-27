@@ -68,7 +68,7 @@ unset($_SESSION['mensagem']);
       </ul>
     </div>
     <button type="submit" style="display: none;">Buscar</button>
-  </form>
+  </form> 
 
   <nav class="nav-links nav-desktop">
     <a href="../controllers/evento-process.php" class="nav-item">
