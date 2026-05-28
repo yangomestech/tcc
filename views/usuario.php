@@ -7,20 +7,36 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: ../views/login.php");
     exit();
 }
-$username = $_SESSION['username'] ?? 'Usuário Teste';
 
-// Lógica para pegar as iniciais do usuário
-$words = explode(" ", trim($username));
-$initials = "";
-if (count($words) >= 2) {
-    $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-} else {
-    $initials = strtoupper(substr($words[0], 0, 2));
+// 1. Inclua a conexão (Certifique-se de que o caminho está correto!)
+require_once '../config/.conexao.php';
+
+// 2. BUSQUE OS DADOS DO BANCO PARA POPULAR A VARIÁVEL $userData
+try {
+    $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = :id");
+    $stmt->execute(['id' => $_SESSION['id_usuario']]);
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $userData = []; // Caso dê erro, deixamos vazio
 }
 
-$email = $_SESSION['email_usuario'] ?? 'usuario@beatstreet.com';
+// Se não achou usuário no banco, desloga
+if (!$userData) {
+    session_destroy();
+    header("Location: ../views/login.php");
+    exit();
+}
 
-// Captura a mensagem de sucesso/erro vinda do banco e limpa da sessão
+// Define variáveis para uso rápido no header/iniciais
+$username = $userData['username'] ?? 'Usuário';
+$email = $userData['email_usuario'] ?? '';
+
+// Lógica de iniciais
+$words = explode(" ", trim($username));
+$initials = (count($words) >= 2) 
+    ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1)) 
+    : strtoupper(substr($words[0], 0, 2));
+
 $mensagem = $_SESSION['mensagem'] ?? "";
 unset($_SESSION['mensagem']);
 ?>
@@ -130,7 +146,7 @@ unset($_SESSION['mensagem']);
 
       <div class="form-group">
         <label for="nome_completo">Nome Completo: *</label>
-        <input type="text" id="nome_completo" name="nome_completo" value="" required placeholder="Seu nome completo">
+        <input type="text" id="nome_completo" name="nome_completo" value="<?= htmlspecialchars($userData['nome_usuario'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required placeholder="Seu nome completo">
       </div>
 
       <div class="form-group">
@@ -141,24 +157,24 @@ unset($_SESSION['mensagem']);
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" value="">
+          <input type="text" id="cpf" name="cpf" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="000.000.000-00" value="<?= htmlspecialchars($userData['cpf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
         
         <div class="flex-1">
           <label for="rg">RG:</label>
-          <input type="text" id="rg" name="rg" placeholder="00.000.000-0" value="">
+          <input type="text" id="rg" name="rg" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00.000.000-0" value="<?= htmlspecialchars($userData['rg'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="telefone">Telefone:</label>
-          <input type="text" id="telefone" name="telefone" placeholder="(00) 00000-0000" value="">
+          <input type="text" id="telefone" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" name="telefone" placeholder="(00) 00000-0000" value="<?= htmlspecialchars($userData['telefone_usuario'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
 
         <div class="flex-1">
           <label for="cep">CEP:</label>
-          <input type="text" id="cep" name="cep" placeholder="00000-000" value="">
+          <input type="text" id="cep" name="cep" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00000-000" value="<?= htmlspecialchars($userData['cep'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
@@ -167,43 +183,45 @@ unset($_SESSION['mensagem']);
       <div class="form-group row-flex">
         <div class="flex-2">
           <label for="rua">Rua:</label>
-          <input type="text" id="rua" name="rua" placeholder="Nome da rua/avenida" value="">
+          <input type="text" id="rua" name="rua" placeholder="Nome da rua/avenida" value="<?= htmlspecialchars($userData['rua'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
         
         <div class="flex-1">
           <label for="numero">Número:</label>
-          <input type="text" id="numero" name="numero" placeholder="Ex: 123" value="">
+          <input type="text" id="numero" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="5" name="numero" placeholder="Ex: 123" value="<?= htmlspecialchars($userData['numero'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="complemento">Complemento:</label>
-          <input type="text" id="complemento" name="complemento" placeholder="Apt, Bloco, etc. (Opcional)" value="">
+          <input type="text" id="complemento" name="complemento" placeholder="Apt, Bloco, etc. (Opcional)" value="<?= htmlspecialchars($userData['complemento'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
         
         <div class="flex-1">
           <label for="bairro">Bairro:</label>
-          <input type="text" id="bairro" name="bairro" placeholder="Seu bairro" value="">
+          <input type="text" id="bairro" name="bairro" placeholder="Seu bairro" value="<?= htmlspecialchars($userData['bairro'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
       <div class="form-group row-flex">
         <div class="flex-2">
           <label for="cidade">Cidade:</label>
-          <input type="text" id="cidade" name="cidade" placeholder="Ex: São Paulo" value="">
+          <input type="text" id="cidade" name="cidade" placeholder="Ex: São Paulo" value="<?= htmlspecialchars($userData['cidade'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
         
         <div class="flex-1">
           <label for="estado">Estado:</label>
-          <input type="text" id="estado" name="estado" placeholder="Ex: SP" value="">
+          <input type="text" id="estado" maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');" name="estado" placeholder="Ex: SP" value="<?= htmlspecialchars($userData['estado'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
       <h3 class="section-title">Biografia</h3>
       <div class="form-group">
         <label for="bio">Fale um pouco sobre você: (Opcional)</label>
-        <textarea id="bio" name="bio" class="form-control" rows="5" placeholder="Sua relação com a cultura Hip Hop, estilos que dança, etc..."></textarea>
+        <textarea id="bio" name="bio" class="form-control" rows="5" placeholder="Sua relação com a cultura Hip Hop, estilos que dança, etc...">
+          <?= htmlspecialchars($userData['descricao'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+        </textarea>
       </div>
 
       <button type="submit" class="btn-submit">Salvar Alterações</button>
