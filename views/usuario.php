@@ -157,24 +157,24 @@ unset($_SESSION['mensagem']);
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" name="cpf" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="000.000.000-00" value="<?= htmlspecialchars($userData['cpf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="cpf" name="cpf" minlength="11" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="000.000.000-00" value="<?= htmlspecialchars($userData['cpf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
         </div>
         
         <div class="flex-1">
           <label for="rg">RG:</label>
-          <input type="text" id="rg" name="rg" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00.000.000-0" value="<?= htmlspecialchars($userData['rg'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="rg" name="rg" minlength="9" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00.000.000-0" value="<?= htmlspecialchars($userData['rg'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"required>
         </div>
       </div>
 
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="telefone">Telefone:</label>
-          <input type="text" id="telefone" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" name="telefone" placeholder="(00) 00000-0000" value="<?= htmlspecialchars($userData['telefone_usuario'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="telefone" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="11" maxlength="11" name="telefone" placeholder="(00) 00000-0000" value="<?= htmlspecialchars($userData['telefone_usuario'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"required>
         </div>
 
         <div class="flex-1">
           <label for="cep">CEP:</label>
-          <input type="text" id="cep" name="cep" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00000-000" value="<?= htmlspecialchars($userData['cep'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="cep" name="cep" minlength="8" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="00000-000" value="<?= htmlspecialchars($userData['cep'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"required>
         </div>
       </div>
 
@@ -188,7 +188,7 @@ unset($_SESSION['mensagem']);
         
         <div class="flex-1">
           <label for="numero">Número:</label>
-          <input type="text" id="numero" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="5" name="numero" placeholder="Ex: 123" value="<?= htmlspecialchars($userData['numero'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="numero" oninput="this.value = this.value.replace(/[^0-9]/g, '');"  maxlength="5" name="numero" placeholder="Ex: 123" value="<?= htmlspecialchars($userData['numero'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
@@ -212,7 +212,7 @@ unset($_SESSION['mensagem']);
         
         <div class="flex-1">
           <label for="estado">Estado:</label>
-          <input type="text" id="estado" maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');" name="estado" placeholder="Ex: SP" value="<?= htmlspecialchars($userData['estado'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="estado" minlength="2" maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');" name="estado" placeholder="Ex: SP" value="<?= htmlspecialchars($userData['estado'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"required>
         </div>
       </div>
 

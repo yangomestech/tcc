@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Captura os dados e remove espaços extras 
     $username      = trim($_POST['username'] ?? '');
     $nome_usuario  = trim($_POST['nome_completo'] ?? ''); 
-    $email_usuario = trim($_POST['email'] ?? '');         
+    $email_usuario = trim($_POST['email'] ?? '');        
     $cpf           = trim($_POST['cpf'] ?? null);
     $rg            = trim($_POST['rg'] ?? null);
     $telefone      = trim($_POST['telefone'] ?? null);
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bairro        = trim($_POST['bairro'] ?? null);
     $cidade        = trim($_POST['cidade'] ?? null);
     $estado        = trim($_POST['estado'] ?? null);
-    $descricao     = trim($_POST['bio'] ?? null);         
+    $descricao     = trim($_POST['bio'] ?? null);        
 
     // Trata strings vazias como NULL para respeitar a estrutura das chaves UNIQUE do seu banco
     $cpf         = $cpf === '' ? null : $cpf;
@@ -50,9 +50,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validação de campos obrigatórios do banco
     if (empty($username) || empty($nome_usuario) || empty($email_usuario)) {
         $_SESSION['mensagem'] = "<div class='alert alert-danger' style='color: #ef4444; margin-bottom: 20px;'>Por favor, preencha todos os campos obrigatórios (*).</div>";
-        header("Location: usuario.php");
+        header("Location: ../views/usuario.php");
         exit();
     }
+
+    // --- NOVA VALIDAÇÃO DE TAMANHO DE CARACTERES ---
+    $erro_tamanho = "";
+    
+    if ($cpf !== null && strlen($cpf) !== 11) {
+        $erro_tamanho = "Digite um CPF válido!";
+    } elseif ($rg !== null && strlen($rg) !== 9) {
+        $erro_tamanho = "Digite um RG válido!";
+    } elseif ($telefone !== null && (strlen($telefone) < 10 || strlen($telefone) > 11)) {
+        $erro_tamanho = "Digite um Telefone válido!";
+    } elseif ($cep !== null && strlen($cep) !== 8) {
+        $erro_tamanho = "Digite um CEP válido!";
+    } elseif ($estado !== null && strlen($estado) !== 2) {
+        $erro_tamanho = "Digite uma sigla de estado válida (ex: SP).";
+    }
+
+    // Se a validação encontrar erro de tamanho, barra a atualização e devolve o aviso
+    if ($erro_tamanho !== "") {
+        $_SESSION['mensagem'] = "<div class='alert alert-danger' style='color: #ef4444; margin-bottom: 20px;'>$erro_tamanho</div>";
+        header("Location: ../views/usuario.php");
+        exit();
+    }
+    // -----------------------------------------------
 
     try {
         // 4. Query SQL baseada nas suas colunas exatas do MariaDB
@@ -112,9 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    header("Location:../views/usuario.php");
+    header("Location: ../views/usuario.php");
     exit();
 } else {
-    header("Location:../views/usuario.php");
+    header("Location: ../views/usuario.php");
     exit();
 }
+?>
