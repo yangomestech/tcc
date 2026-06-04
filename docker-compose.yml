@@ -5,6 +5,7 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html:delegated
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     depends_on:
       - db
 
