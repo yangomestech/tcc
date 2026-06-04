@@ -34,22 +34,20 @@
 }
 
 .banner-container {
-    background-color: var(--bg-card); /* Usa a variável do seu styleDashboard */
-    border: 1px solid #222;
-    border-radius: 15px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
+    background-color: transparent; /* Fundo limpo */
+    border-radius: 12px;
+    overflow: hidden; /* Obriga a imagem a respeitar o border-radius */
+    display: block; /* Remove o flex desnecessário aqui */
+    width: 100%;
+    /* Removido o padding e as bordas que causavam o espaço morto */
 }
 
 .img-cartaz {
     width: 100%;
-    max-height: 550px;
-    object-fit: contain; /* Não distorce a arte do flyer, encaixa certinho! */
-    border-radius: 8px;
-
+    display: block;
+    aspect-ratio: 16 / 9; /* Força proporção Widescreen. Nenhuma imagem vai ficar mais alta/baixa que isso */
+    object-fit: cover; /* Cobre todo o espaço. Corta bordas laterais se necessário, mas não deforma e não deixa espaço vazio */
+    border-radius: 12px;
 }
 
 /* ====================================================
@@ -200,4 +198,204 @@
     color: #ccc;
     line-height: 1.8;
     font-size: 15px;
+}
+
+/* ====================================================
+   ESTILOS DINÂMICOS (BOTÕES ATIVOS E CONTADORES)
+   ==================================================== */
+
+.acoes-box form {
+    flex: 1; /* Garante que os formulários ocupem o espaço igualmente */
+}
+
+.acoes-box .btn {
+    width: 100%;
+}
+
+.btn-presenca.ativo {
+    background: #333; /* Fundo mais escuro para indicar 'cancelar' */
+    border: 1px solid var(--laranja);
+    color: #fff;
+    box-shadow: none;
+}
+
+.btn-presenca.ativo:hover {
+    background: #444;
+    border-color: #ff5500;
+}
+
+.btn-favorito.ativo {
+    border-color: var(--roxo);
+    background: rgba(198, 12, 198, 0.15);
+    color: var(--roxo);
+}
+
+.badge-contador {
+    background: rgba(255,255,255,0.2);
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* ====================================================
+   SEÇÃO DE COMENTÁRIOS
+   ==================================================== */
+
+.comentarios-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-comentario {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+}
+
+.form-comentario textarea {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-comentario textarea:focus {
+    outline: none;
+    border-color: var(--roxo);
+}
+
+.form-comentario .btn {
+    align-self: flex-end;
+    padding: 10px 20px;
+    font-size: 14px;
+    width: auto;
+}
+
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comentario-item {
+    background: #1e1e1e;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid var(--roxo);
+}
+
+.comentario-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.comentario-header strong {
+    color: var(--laranja);
+}
+
+.comentario-header span {
+    color: #888;
+}
+
+.comentario-body {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.sem-comentarios {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+/* ====================================================
+   TAGS DE ESTILOS DE DANÇA (CHIPS/BADGES CORRIGIDOS)
+   ==================================================== */
+.estilos-secao-container {
+    margin-top: 20px;
+    padding: 0 4px;
+    width: 100%;
+}
+
+.estilos-titulo {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.estilos-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-estilo {
+    background-color: rgba(198, 12, 198, 0.15); /* Roxo translúcido fixo */
+    border: 1px solid rgba(198, 12, 198, 0.4);   /* Borda roxa fixa */
+    color: #f3e5f5; /* Texto off-white com nuance roxa */
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.80rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+/* Efeito invertido ao passar o mouse para dar feedback de interatividade */
+.tag-estilo:hover {
+    background-color: #c60cc6; /* Roxo sólido */
+    border-color: #c60cc6;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(198, 12, 198, 0.5);
+}
+
+/* Botão de Edição do Criador */
+.btn-editar-flutuante {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-editar-flutuante:hover {
+    border-color: var(--laranja);
+    color: var(--laranja);
+    background-color: rgba(249, 115, 22, 0.1);
+}
+
+@media (max-width: 600px) {
+    .btn-editar-flutuante {
+        position: relative;
+        display: inline-flex;
+        margin-bottom: 10px;
+    }
 }
