@@ -18,16 +18,19 @@ $email = $_SESSION['email_usuario'] ?? 'usuario@beatstreet.com';
 $words = explode(" ", trim($username));
 $initials = count($words) >= 2 ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1)) : strtoupper(substr($words[0], 0, 2));
 
-// FUNÇÃO DE FALLBACK DE IMAGEM
+// FUNÇÃO DE FALLBACK DE IMAGEM SIMPLIFICADA
 function getImagemFallback($caminho, $id_tipo) {
-    if (!empty($caminho) && file_exists("../" . $caminho)) {
-        return "../" . $caminho;
+    // Se o caminho não estiver vazio, use o que está no banco direto
+    if (!empty($caminho)) {
+        return $caminho;
     }
+    
+    // Se estiver vazio (NULL), aplica o padrão por tipo
     switch($id_tipo) {
-        case 1: return "https://images.unsplash.com/photo-1535525153412-5a42439a210d?q=80&w=800&auto=format&fit=crop"; // Dança
-        case 2: return "https://images.unsplash.com/photo-1520975922323-3c36e27c0f06?q=80&w=800&auto=format&fit=crop"; // Jam
-        case 3: return "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?q=80&w=800&auto=format&fit=crop"; // Rima
-        case 4: return "https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=800&auto=format&fit=crop"; // Slam
+        case 1: return "https://images.unsplash.com/photo-1535525153412-5a42439a210d?q=80&w=800&auto=format&fit=crop"; 
+        case 2: return "https://images.unsplash.com/photo-1520975922323-3c36e27c0f06?q=80&w=800&auto=format&fit=crop"; 
+        case 3: return "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?q=80&w=800&auto=format&fit=crop"; 
+        case 4: return "https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=800&auto=format&fit=crop"; 
         default: return "../assets/img/computador1.jpg";
     }
 }
@@ -100,6 +103,7 @@ function renderRowEventos($titulo, $eventos) {
     echo "<div class='cards'>";
     foreach ($eventos as $ev) {
         $imagem = htmlspecialchars(getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']));
+        // Variável declarada como $dataFmt
         $dataFmt = date('d/m', strtotime($ev['data_evento']));
         $cidade = htmlspecialchars($ev['cidade']);
         $nome = htmlspecialchars($ev['nome_evento']);
@@ -111,10 +115,14 @@ function renderRowEventos($titulo, $eventos) {
             <div class='card-content'>
                 <h3>{$nome}</h3>
                 <p>{$cidade} • {$dataFmt} às {$horario}</p>
-                <button>Ver detalhes</button>
+                <a href='../controllers/detalhe-evento.php?id={$ev['id_evento']}'>
+                    <button>Ver detalhes</button>
+                </a>
             </div>
         </div>";
     }
+        
+
     echo "</div></section>";
 }
 

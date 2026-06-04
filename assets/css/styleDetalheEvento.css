@@ -1,0 +1,203 @@
+/* ====================================================
+   PÁGINA DE DETALHES DO EVENTO (Layout Sympla / TCC)
+   As variáveis e resets base (body, *) já vêm do styleDashboard.css
+   ==================================================== */
+
+.evento-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+/* Responsividade Desktop: Divide em 2 colunas */
+@media (min-width: 900px) {
+    .evento-wrapper {
+        grid-template-columns: 1.2fr 1fr;
+        align-items: start;
+    }
+    
+    /* A descrição ocupa o espaço inteiro embaixo */
+    .evento-descricao-section {
+        grid-column: 1 / -1; 
+    }
+}
+
+/* ====================================================
+   BANNER PROPORCIONAL
+   ==================================================== */
+.evento-banner-section {
+    width: 100%;
+    padding-top: 140px;
+}
+
+.banner-container {
+    background-color: var(--bg-card); /* Usa a variável do seu styleDashboard */
+    border: 1px solid #222;
+    border-radius: 15px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.img-cartaz {
+    width: 100%;
+    max-height: 550px;
+    object-fit: contain; /* Não distorce a arte do flyer, encaixa certinho! */
+    border-radius: 8px;
+
+}
+
+/* ====================================================
+   INFORMAÇÕES (DIREITA)
+   ==================================================== */
+.evento-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-header .tag-tipo {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--roxo), var(--laranja));
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.evento-titulo {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.evento-organizador {
+    color: #aaa;
+    font-size: 15px;
+}
+
+.evento-organizador strong {
+    color: var(--laranja);
+}
+
+/* ====================================================
+   CAIXAS DE INFORMAÇÕES (BOXES)
+   ==================================================== */
+.info-box {
+    background-color: var(--bg-card);
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 25px;
+    transition: border-color 0.3s;
+}
+
+.info-box:hover {
+    border-color: #444;
+}
+
+.info-box h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #fff;
+    border-left: 4px solid var(--roxo);
+    padding-left: 10px;
+}
+
+/* Caixa Específica de Data e Hora */
+.data-hora-box {
+    display: flex;
+    gap: 30px;
+}
+
+.data-hora-box .item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.data-hora-box svg {
+    width: 35px;
+    height: 35px;
+    color: var(--laranja);
+}
+
+.data-hora-box .label {
+    display: block;
+    font-size: 13px;
+    color: #888;
+}
+
+.data-hora-box .valor {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Textos padrões dentro das boxes */
+.info-box p {
+    color: #ccc;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+/* ====================================================
+   BOTÕES DE AÇÃO (CTA)
+   ==================================================== */
+.acoes-box {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.acoes-box .btn {
+    flex: 1; /* Faz os botões ocuparem metades iguais da tela */
+    padding: 16px;
+    border-radius: 8px; /* Botões mais "quadradinhos" estilo Sympla */
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s ease;
+}
+
+.btn-presenca {
+    background: linear-gradient(90deg, var(--roxo), var(--laranja));
+    color: #fff;
+    border: none;
+}
+
+.btn-presenca:hover {
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-favorito {
+    background: transparent;
+    color: #fff;
+    border: 1px solid var(--roxo);
+}
+
+.btn-favorito:hover {
+    background: rgba(198, 12, 198, 0.1);
+    color: var(--roxo);
+}
+
+/* ====================================================
+   DESCRIÇÃO DO EVENTO
+   ==================================================== */
+.descricao-box .texto-descricao {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 15px;
+}
