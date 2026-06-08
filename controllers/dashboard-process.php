@@ -33,11 +33,14 @@ if ($logado) {
     }
 }
 
-// FUNÇÃO DE FALLBACK DE IMAGEM
+// FUNÇÃO DE FALLBACK DE IMAGEM SIMPLIFICADA
 function getImagemFallback($caminho, $id_tipo) {
-    if (!empty($caminho) && file_exists("../" . $caminho)) {
-        return "../" . $caminho;
+    // Se o caminho não estiver vazio, use o que está no banco direto
+    if (!empty($caminho)) {
+        return $caminho;
     }
+    
+    // Se estiver vazio (NULL), aplica o padrão por tipo
     switch($id_tipo) {
         case 1: return "https://images.unsplash.com/photo-1535525153412-5a42439a210d?q=80&w=800&auto=format&fit=crop"; 
         case 2: return "https://images.unsplash.com/photo-1520975922323-3c36e27c0f06?q=80&w=800&auto=format&fit=crop"; 
@@ -109,6 +112,7 @@ function renderRowEventos($titulo, $eventos, $isLogado) {
     echo "<div class='cards'>";
     foreach ($eventos as $ev) {
         $imagem = htmlspecialchars(getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']));
+        // Variável declarada como $dataFmt
         $dataFmt = date('d/m', strtotime($ev['data_evento']));
         $cidade = htmlspecialchars($ev['cidade']);
         $nome = htmlspecialchars($ev['nome_evento']);
@@ -128,10 +132,20 @@ function renderRowEventos($titulo, $eventos, $isLogado) {
             echo "<a href='../views/login.php' class='btn-login-sugerido'>Entre para participar</a>";
         }
         
-        echo "      <a href='evento-detalhes.php?id={$id_evento}' class='btn-detalhes'>Ver detalhes</a>
-                </div>
-              </div>";
+        echo "
+        <div class='card'>
+            <img src='{$imagem}' alt='{$nome}'>
+            <div class='card-content'>
+                <h3>{$nome}</h3>
+                <p>{$cidade} • {$dataFmt} às {$horario}</p>
+                <a href='../controllers/detalhe-evento.php?id={$ev['id_evento']}'>
+                    <button>Ver detalhes</button>
+                </a>
+            </div>
+        </div>";
     }
+        
+
     echo "</div></section>";
 }
 

@@ -1,669 +1,669 @@
-:root {
-  --roxo: #c60cc6;
-  --laranja: #f97316;
-  --bg-black: #000000;
-  --bg-card: #111111;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
-  background: #000;
-  color: #fff;
-  min-height: 100vh;
-}
-
-.roxo { color: rgba(198, 12, 198, 0.92); }
-.laranja { color: #f97316; }
-
-
-/* Novo Hero Top Centralizado */
-.hero-top {
-  text-align: center;
-  padding: 40px 20px 20px;
-}
-
-.hero-text h1 {
-  font-size: 32px;
-}
-
-.hero-text p {
-  color: #bbb;
-  margin-top: 5px;
-}
-
-
-.btn {
-  padding: 12px 20px; 
-  border-radius: 30px; 
-  border: none; 
-  margin: 0 10px;
-  cursor: pointer; 
-  background: linear-gradient(90deg, purple, orange); 
-  color: white;
-  transition: 0.3s; 
-  display: inline-block; 
-  font-weight: bold;
-}
-
-/* Carrossel estilo Sympla */
-.sympla-carousel {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 20px auto 0;
-  height: 450px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.carousel-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.carousel-item {
-  position: absolute;
-  width: 60%;
-  max-width: 750px;
-  height: 380px;
-  border-radius: 15px;
-  transition: transform 0.5s ease, opacity 0.5s ease, z-index 0s;
-  opacity: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
-}
-
-.carousel-caption {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 20px;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-  font-size: 20px;
-  font-weight: 600;
-  text-align: left;
-}
-
-/* Classes dinâmicas injetadas pelo JS */
-.carousel-item.active {
-  opacity: 1;
-  z-index: 3;
-  transform: scale(1) translateX(0);
-  pointer-events: auto;
-}
-
-.carousel-item.prev {
-  opacity: 0.4;
-  z-index: 2;
-  transform: scale(0.85) translateX(-60%);
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-.carousel-item.next {
-  opacity: 0.4;
-  z-index: 2;
-  transform: scale(0.85) translateX(60%);
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-/* Controles */
-.carousel-controls {
-  position: absolute;
-  width: 80%;
-  display: flex;
-  justify-content: space-between;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  pointer-events: none;
-}
-
-.nav-btn {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: #fff;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  pointer-events: auto;
-  backdrop-filter: blur(5px);
-  transition: 0.3s;
-}
-
-.nav-btn:hover {
-  background: linear-gradient(135deg, #7b2cbf, #ff7b00);
-}
-
-.carousel-indicators {
-  position: absolute;
-  bottom: 5px;
-  display: flex;
-  gap: 10px;
-  z-index: 10;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.dot.active {
-  background: #f97316;
-  transform: scale(1.3);
-}
-
-/* Restante do Site */
-
-
-
-.section { 
-  padding: 40px 60px; 
-}
-
-.section h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #fff;
-  border-left: 4px solid var(--laranja);
-  padding-left: 10px;
-}
-
-.cards { 
-  display: flex; 
-  gap: 20px; 
-  overflow-x: auto; /* Habilita o scroll horizontal */
-  padding-bottom: 20px; /* Espaço para a barra de rolagem */
-  scroll-snap-type: x mandatory; /* Deixa o scroll suave e "magnético" */
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Estilização da barra de rolagem dos cards */
-.cards::-webkit-scrollbar {
-  height: 8px;
-}
-.cards::-webkit-scrollbar-track {
-  background: #222;
-  border-radius: 4px;
-}
-.cards::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, var(--roxo), var(--laranja));
-  border-radius: 4px;
-}
-
-.card { 
-  background: var(--bg-card); 
-  border-radius: 15px; 
-  overflow: hidden; 
-  flex: 0 0 auto; /* Impede que os cards encolham */
-  width: 300px; 
-  scroll-snap-align: start; /* Ponto de parada magnético */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; 
-  border: 1px solid #222;
-}
-
-.card:hover { 
-  transform: translateY(-5px); /* Subida suave ao invés de aumentar muito (melhor UX) */
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  border-color: var(--roxo);
-}
-
-.card img { 
-  width: 100%; 
-  height: 180px;
-  object-fit: cover;
-}
-
-.card-content { 
-  padding: 20px; 
-}
-
-.card-content h3 {
-  font-size: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* Corta textos muito grandes */
-}
-
-.card-content p {
-  color: #aaa;
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-.card button { 
-  margin-top: 10px; 
-  width: 100%; 
-  padding: 12px; 
-  border-radius: 8px; 
-  border: none; 
-  background: linear-gradient(90deg, var(--roxo), var(--laranja)); 
-  color: white; 
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.card button:hover {
-  opacity: 0.8;
-}
-
-footer { 
-  text-align: center; 
-  padding: 20px; 
-  margin-top: 40px; 
-  background: #111; 
-}
-/* HEADER ESTRUTURA SYMPLA */
-.header-sympla {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 40px;
-  background-color: #000;
-  border-bottom: 1px solid #222;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-sympla .logo {
-  font-size: 30px;
-  font-weight: 700;
-  white-space: nowrap;
-  text-decoration: none; /* Tira o sublinhado do link */
-  color: #fff; /* Garante que o texto seja branco */
-}
-
-.header-sympla .logo a,
-.header-sympla .logo a:link,
-.header-sympla .logo a:visited,
-.header-sympla .logo a:hover,
-.header-sympla .logo a:active {
-  color: #ffffff !important;
-  text-decoration: none !important;
-  display: inline;
-}
-
-.header-sympla .logo .roxo {
-  color: rgba(198, 12, 198, 0.92) !important;
-}
-
-.header-sympla .logo .laranja {
-  color: #f97316 !important;
-}
-
-/* CONTAINER DA BUSCA */
-.search-sympla {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  max-width: 800px;
-   margin: 20px auto 0 auto; 
-
-}
-
-/* INPUT PRINCIPAL */
-.search-box {
-  position: relative;
-  flex: 1;
-}
-
-.search-box .search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  color: #888;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 12px 20px 12px 45px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  background-color: #111;
-  color: #fff;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.search-box input:focus {
-  border-color: #7b2cbf;
-  box-shadow: 0 0 0 2px rgba(123, 44, 191, 0.2);
-}
-
-.search-box input::placeholder {
-  color: #888;
-}
-
-/* BOTÃO/INPUT DE LOCALIZAÇÃO */
-.location-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: rgba(249, 115, 22, 0.1); /* Fundo sutil baseado na sua cor laranja */
-  border: 1px solid rgba(249, 115, 22, 0.3);
-  border-radius: 8px;
-  padding: 0 15px;
-  height: 45px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.location-box:hover {
-  background-color: rgba(249, 115, 22, 0.2);
-}
-
-.location-box .location-icon {
-  width: 18px;
-  height: 18px;
-  color: #f97316; /* Cor laranja do BeatStreet */
-  margin-right: 8px;
-}
-
-/* Estilo do texto selecionado no box */
-.location-box span {
-  color: #f97316;
-  font-weight: 600;
-  font-size: 14px;
-  width: 140px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-}
-
-/* Oculta input default nativo caso exista vestígio */
-.location-box input[type="text"] {
-  display: none;
-}
-
-/* Menu Dropdown Estilizado */
-.location-menu {
-  display: none; /* Oculto por padrão */
-  position: absolute;
-  top: 120%;
-  right: 0;
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 8px;
-  list-style: none;
-  width: 250px;
-  padding: 10px 0;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-  z-index: 1000;
-}
-
-.location-menu.active {
-  display: block; /* Classe ativada via JS */
-}
-
-.location-item {
-  padding: 12px 20px;
-  font-size: 14px;
-  color: #ccc;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.location-item:hover {
-  background-color: #222;
-  color: #f97316;
-}
-
-/* Destaque para o botão de GPS igual ao Sympla */
-.location-item.use-location {
-  border-bottom: 1px solid #333;
-  margin-bottom: 5px;
-  padding-bottom: 15px;
-  color: #7b2cbf;
-  font-weight: 600;
-}
-
-.location-item.use-location:hover {
-  color: #9d4edd;
-}
-
-.location-box .chevron-icon {
-  width: 20px;
-  height: 20px;
-  color: #f97316;
-  margin-left: 5px;
-}
-
-/* NAVEGAÇÃO À DIREITA */
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  white-space: nowrap;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #ccc;
-  font-size: 14px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav-links a:hover {
-  color: orange;
-}
-
-.nav-links .logout-btn {
-  color: #ff8a8a;
-}
-
-/* --- Novo Menu Nav Desktop (Dark Theme) --- */
-.nav-desktop {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #ccc;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-}
-
-.nav-item:hover {
+  :root {
+    --roxo: #c60cc6;
+    --laranja: #f97316;
+    --bg-black: #000000;
+    --bg-card: #111111;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background: #000;
     color: #fff;
-}
+    min-height: 100vh;
+  }
 
-/* --- Botão do Menu de Usuário --- */
-.user-menu-container {
+  .roxo { color: rgba(198, 12, 198, 0.92); }
+  .laranja { color: #f97316; }
+
+
+  /* Novo Hero Top Centralizado */
+  .hero-top {
+    text-align: center;
+    padding: 40px 20px 20px;
+  }
+
+  .hero-text h1 {
+    font-size: 32px;
+  }
+
+  .hero-text p {
+    color: #bbb;
+    margin-top: 5px;
+  }
+
+
+  .btn {
+    padding: 12px 20px; 
+    border-radius: 30px; 
+    border: none; 
+    margin: 0 10px;
+    cursor: pointer; 
+    background: linear-gradient(90deg, purple, orange); 
+    color: white;
+    transition: 0.3s; 
+    display: inline-block; 
+    font-weight: bold;
+  }
+
+  /* Carrossel estilo Sympla */
+  .sympla-carousel {
     position: relative;
-}
-
-.user-profile-btn {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto 0;
+    height: 450px;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    border: 1px solid #444;
-    border-radius: 20px;
-    padding: 4px 6px 4px 10px;
-    cursor: pointer;
-    color: #fff;
-    transition: all 0.3s ease;
-}
-
-.user-profile-btn * {
-    pointer-events: none;
-}
-
-.user-profile-btn:hover {
-    background: #222;
-    border-color: #666;
-}
-
-.user-initials {
-    background-color: #333;
-    color: #fff;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border: 1px solid #555;
-}
-
-/* --- Dropdown Dark --- */
-.user-dropdown {
-    position: absolute;
-    top: calc(100% + 15px);
-    right: 0;
-    background-color: #111;
-    width: 260px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-    display: none; 
-    z-index: 9999; 
-    overflow: hidden;
-    color: #eee;
-}
-
-.user-dropdown.active {
-    display: block;
-}
-
-.dropdown-header {
-    display: flex;
     align-items: center;
-    padding: 20px 15px;
-    gap: 15px;
-    border-bottom: 1px solid #222;
-}
+    overflow: hidden;
+  }
 
-.user-initials-large {
-    background-color: #222;
+  .carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .carousel-item {
+    position: absolute;
+    width: 60%;
+    max-width: 750px;
+    height: 380px;
+    border-radius: 15px;
+    transition: transform 0.5s ease, opacity 0.5s ease, z-index 0s;
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* Classes dinâmicas injetadas pelo JS */
+  .carousel-item.active {
+    opacity: 1;
+    z-index: 3;
+    transform: scale(1) translateX(0);
+    pointer-events: auto;
+  }
+
+  .carousel-item.prev {
+    opacity: 0.4;
+    z-index: 2;
+    transform: scale(0.85) translateX(-60%);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .carousel-item.next {
+    opacity: 0.4;
+    z-index: 2;
+    transform: scale(0.85) translateX(60%);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  /* Controles */
+  .carousel-controls {
+    position: absolute;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
     color: #fff;
     width: 45px;
     height: 45px;
     border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    pointer-events: auto;
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+  }
+
+  .nav-btn:hover {
+    background: linear-gradient(135deg, #7b2cbf, #ff7b00);
+  }
+
+  .carousel-indicators {
+    position: absolute;
+    bottom: 5px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .dot.active {
+    background: #f97316;
+    transform: scale(1.3);
+  }
+
+  /* Restante do Site */
+
+
+
+  .section { 
+    padding: 40px 60px; 
+  }
+
+  .section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #fff;
+    border-left: 4px solid var(--laranja);
+    padding-left: 10px;
+  }
+
+  .cards { 
+    display: flex; 
+    gap: 20px; 
+    overflow-x: auto; /* Habilita o scroll horizontal */
+    padding-bottom: 20px; /* Espaço para a barra de rolagem */
+    scroll-snap-type: x mandatory; /* Deixa o scroll suave e "magnético" */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Estilização da barra de rolagem dos cards */
+  .cards::-webkit-scrollbar {
+    height: 8px;
+  }
+  .cards::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 4px;
+  }
+  .cards::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--roxo), var(--laranja));
+    border-radius: 4px;
+  }
+
+  .card { 
+    background: var(--bg-card); 
+    border-radius: 15px; 
+    overflow: hidden; 
+    flex: 0 0 auto; /* Impede que os cards encolham */
+    width: 300px; 
+    scroll-snap-align: start; /* Ponto de parada magnético */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    border: 1px solid #222;
+  }
+
+  .card:hover { 
+    transform: translateY(-5px); /* Subida suave ao invés de aumentar muito (melhor UX) */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border-color: var(--roxo);
+  }
+
+  .card img { 
+    width: 100%; 
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .card-content { 
+    padding: 20px; 
+  }
+
+  .card-content h3 {
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Corta textos muito grandes */
+  }
+
+  .card-content p {
+    color: #aaa;
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .card button { 
+    margin-top: 10px; 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: none; 
+    background: linear-gradient(90deg, var(--roxo), var(--laranja)); 
+    color: white; 
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+
+  .card button:hover {
+    opacity: 0.8;
+  }
+
+  footer { 
+    text-align: center; 
+    padding: 20px; 
+    margin-top: 40px; 
+    background: #111; 
+  }
+  /* HEADER ESTRUTURA SYMPLA */
+  .header-sympla {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #000;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-sympla .logo {
+    font-size: 30px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none; /* Tira o sublinhado do link */
+    color: #fff; /* Garante que o texto seja branco */
+  }
+
+  .header-sympla .logo a,
+  .header-sympla .logo a:link,
+  .header-sympla .logo a:visited,
+  .header-sympla .logo a:hover,
+  .header-sympla .logo a:active {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    display: inline;
+  }
+
+  .header-sympla .logo .roxo {
+    color: rgba(198, 12, 198, 0.92) !important;
+  }
+
+  .header-sympla .logo .laranja {
+    color: #f97316 !important;
+  }
+
+  /* CONTAINER DA BUSCA */
+  .search-sympla {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 1.2rem;
-    border: 1px solid #444;
-}
+    gap: 15px;
+    max-width: 800px;
+    margin: 20px auto 0 auto; 
 
-.user-info {
-    display: flex;
-    flex-direction: column;
-}
+  }
 
-.user-info strong {
-    font-size: 0.95rem;
+  /* INPUT PRINCIPAL */
+  .search-box {
+    position: relative;
+    flex: 1;
+  }
+
+  .search-box .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #888;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #111;
     color: #fff;
-}
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
 
-.user-info span {
-    font-size: 0.8rem;
-    color: #aaa;
-}
+  .search-box input:focus {
+    border-color: #7b2cbf;
+    box-shadow: 0 0 0 2px rgba(123, 44, 191, 0.2);
+  }
 
-/* --- Lista de Ações (Dark) --- */
-.dropdown-list {
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-}
+  .search-box input::placeholder {
+    color: #888;
+  }
 
-.dropdown-list li {
-    padding: 0;
-}
-
-.dropdown-list a {
+  /* BOTÃO/INPUT DE LOCALIZAÇÃO */
+  .location-box {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 20px;
+    background-color: rgba(249, 115, 22, 0.1); /* Fundo sutil baseado na sua cor laranja */
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: 8px;
+    padding: 0 15px;
+    height: 45px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .location-box:hover {
+    background-color: rgba(249, 115, 22, 0.2);
+  }
+
+  .location-box .location-icon {
+    width: 18px;
+    height: 18px;
+    color: #f97316; /* Cor laranja do BeatStreet */
+    margin-right: 8px;
+  }
+
+  /* Estilo do texto selecionado no box */
+  .location-box span {
+    color: #f97316;
+    font-weight: 600;
+    font-size: 14px;
+    width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+  }
+
+  /* Oculta input default nativo caso exista vestígio */
+  .location-box input[type="text"] {
+    display: none;
+  }
+
+  /* Menu Dropdown Estilizado */
+  .location-menu {
+    display: none; /* Oculto por padrão */
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    list-style: none;
+    width: 250px;
+    padding: 10px 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    z-index: 1000;
+  }
+
+  .location-menu.active {
+    display: block; /* Classe ativada via JS */
+  }
+
+  .location-item {
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #ccc;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .location-item:hover {
+    background-color: #222;
+    color: #f97316;
+  }
+
+  /* Destaque para o botão de GPS igual ao Sympla */
+  .location-item.use-location {
+    border-bottom: 1px solid #333;
+    margin-bottom: 5px;
+    padding-bottom: 15px;
+    color: #7b2cbf;
+    font-weight: 600;
+  }
+
+  .location-item.use-location:hover {
+    color: #9d4edd;
+  }
+
+  .location-box .chevron-icon {
+    width: 20px;
+    height: 20px;
+    color: #f97316;
+    margin-left: 5px;
+  }
+
+  /* NAVEGAÇÃO À DIREITA */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    white-space: nowrap;
+  }
+
+  .nav-links a {
     text-decoration: none;
     color: #ccc;
-    font-size: 0.95rem;
-    transition: background 0.2s, color 0.2s;
-}
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
 
-.dropdown-list a:hover {
-    background-color: #222;
-    color: #fff;
-}
+  .nav-links a:hover {
+    color: orange;
+  }
 
-.dropdown-list a svg {
-    color: #888;
-    transition: color 0.2s;
-}
+  .nav-links .logout-btn {
+    color: #ff8a8a;
+  }
 
-.dropdown-list a:hover svg {
-    color: #7b2cbf; /* Roxo sutil para manter o feedback visual ao passar o mouse */
-}
+  /* --- Novo Menu Nav Desktop (Dark Theme) --- */
+  .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+  }
 
-.dropdown-list .divider {
-    height: 1px;
-    background-color: #222;
-    margin: 8px 0;
-}
+  .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+  }
 
-/* Estilo específico para o botão de sair */
-.dropdown-list a.logout-link svg {
-    color: #ff4757;
-}
+  .nav-item:hover {
+      color: #fff;
+  }
 
-.dropdown-list a.logout-link:hover {
-    color: #ff4757;
-    background-color: rgba(255, 71, 87, 0.1);
-}
+  /* --- Botão do Menu de Usuário --- */
+  .user-menu-container {
+      position: relative;
+  }
 
-/* Força o cabeçalho a não cortar o menu dropdown */
-.header-sympla, .nav-links, .nav-desktop, .user-menu-container {
-    overflow: visible !important;
-}
+  .user-profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid #444;
+      border-radius: 20px;
+      padding: 4px 6px 4px 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.3s ease;
+  }
+
+  .user-profile-btn * {
+      pointer-events: none;
+  }
+
+  .user-profile-btn:hover {
+      background: #222;
+      border-color: #666;
+  }
+
+  .user-initials {
+      background-color: #333;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid #555;
+  }
+
+  /* --- Dropdown Dark --- */
+  .user-dropdown {
+      position: absolute;
+      top: calc(100% + 15px);
+      right: 0;
+      background-color: #111;
+      width: 260px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      display: none; 
+      z-index: 9999; 
+      overflow: hidden;
+      color: #eee;
+  }
+
+  .user-dropdown.active {
+      display: block;
+  }
+
+  .dropdown-header {
+      display: flex;
+      align-items: center;
+      padding: 20px 15px;
+      gap: 15px;
+      border-bottom: 1px solid #222;
+  }
+
+  .user-initials-large {
+      background-color: #222;
+      color: #fff;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.2rem;
+      border: 1px solid #444;
+  }
+
+  .user-info {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .user-info strong {
+      font-size: 0.95rem;
+      color: #fff;
+  }
+
+  .user-info span {
+      font-size: 0.8rem;
+      color: #aaa;
+  }
+
+  /* --- Lista de Ações (Dark) --- */
+  .dropdown-list {
+      list-style: none;
+      padding: 10px 0;
+      margin: 0;
+  }
+
+  .dropdown-list li {
+      padding: 0;
+  }
+
+  .dropdown-list a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: #ccc;
+      font-size: 0.95rem;
+      transition: background 0.2s, color 0.2s;
+  }
+
+  .dropdown-list a:hover {
+      background-color: #222;
+      color: #fff;
+  }
+
+  .dropdown-list a svg {
+      color: #888;
+      transition: color 0.2s;
+  }
+
+  .dropdown-list a:hover svg {
+      color: #7b2cbf; /* Roxo sutil para manter o feedback visual ao passar o mouse */
+  }
+
+  .dropdown-list .divider {
+      height: 1px;
+      background-color: #222;
+      margin: 8px 0;
+  }
+
+  /* Estilo específico para o botão de sair */
+  .dropdown-list a.logout-link svg {
+      color: #ff4757;
+  }
+
+  .dropdown-list a.logout-link:hover {
+      color: #ff4757;
+      background-color: rgba(255, 71, 87, 0.1);
+  }
+
+  /* Força o cabeçalho a não cortar o menu dropdown */
+  .header-sympla, .nav-links, .nav-desktop, .user-menu-container {
+      overflow: visible !important;
+  }
 

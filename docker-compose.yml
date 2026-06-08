@@ -6,6 +6,30 @@ services:
     volumes:
       - .:/var/www/html:delegated
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.11
+    restart: always
+    # Exponha no localhost:3306 para que o Tailscale possa enxergar
+    ports:
+      - "3306:3306"
+    environment:
+      # NUNCA hardcode senhas. Use variáveis.
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: tcc
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./tcc.sql:/docker-entrypoint-initdb.d/init.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin 
+    restart: always
+    ports:
+      - "8081:80"
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
