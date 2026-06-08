@@ -1,9 +1,23 @@
 <?php
 session_start();
 
+// 1. Verifica se está logado
 if (!isset($_SESSION['id_usuario'])) {
     die("Acesso negado. Apenas usuários logados podem criar/editar eventos.");
 }
+
+// =========================================================================
+// 2. NOVA REGRA: BLOQUEIO PARA QUEM NÃO TEM RG E CPF
+// =========================================================================
+if (empty($_SESSION['documentos_completos'])) {
+    // Salva uma mensagem de erro para exibir na tela do perfil
+    $_SESSION['erro_documentos'] = "Acesso negado: Para criar um evento, é obrigatório preencher seu RG e CPF no perfil por motivos de segurança.";
+    
+    // Redireciona o usuário de volta para a tela de configurações da conta
+    header("Location: ../views/usuario.php"); 
+    exit();
+}
+// =========================================================================
 
 require_once '../config/.conexao.php'; 
 
