@@ -1,8 +1,11 @@
 <?php
-$host = "100.98.177.14";
-$user = "root";
-$pass = "root";
-$db = "tcc";
+
+require_once 'env.php';
+
+$host = $_ENV['DB_HOST'];
+$user = $_ENV['DB_USER'];
+$pass = $_ENV['DB_PASSWORD'];
+$db   = $_ENV['DB_NAME'];
 
 try {
     // Cria a conexão usando PDO
