@@ -42,33 +42,9 @@ unset($_SESSION['mensagem']);
 </a>
   </div>
   
-  <form class="search-sympla" action="busca.php" method="GET">
-    <div class="search-box">
-      <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 2a8 8 0 016.32 12.9l4.387 4.387a1 1 0 01-1.414 1.415l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"/></svg>
-      <input type="text" name="evento" placeholder="Buscar eventos, artistas...">
-    </div>
 
-    <div class="location-box">
-      <svg class="location-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
-      <span id="locationSelectedText">Qualquer lugar</span>
-      <input type="hidden" name="cidade" id="cidadeInput" value="">
-      <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
 
-      <ul class="location-menu" id="locationMenu">
-        <li class="location-item use-location" data-value="gps">
-          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" fill="currentColor"/></svg>
-          Usar minha localização atual
-        </li>
-        <li class="location-item" data-value="">Qualquer lugar</li>
-        <li class="location-item" data-value="SP">São Paulo (SP)</li>
-        <li class="location-item" data-value="SC">Santa Catarina (SC)</li>
-        <li class="location-item" data-value="RJ">Rio de Janeiro (RJ)</li>
-        <li class="location-item" data-value="PR">Paraná (PR)</li>
-        <li class="location-item" data-value="MG">Minas Gerais (MG)</li>
-      </ul>
-    </div>
-    <button type="submit" style="display: none;">Buscar</button>
-  </form> 
+
 
   <nav class="nav-links nav-desktop">
     <a href="../controllers/evento-process.php" class="nav-item">
@@ -120,6 +96,13 @@ unset($_SESSION['mensagem']);
     <?= $mensagem ?>
 
 <form id="profileForm" class="profile-form" action="../controllers/atualizaUser.php" method="POST">
+
+<?php if (isset($_SESSION['erro_documentos'])): ?>
+    <div style="background-color: #ff4d4d; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center;">
+        <?= htmlspecialchars($_SESSION['erro_documentos']); ?>
+    </div>
+    <?php unset($_SESSION['erro_documentos']); ?>
+<?php endif; ?>
         
       <h3 class="section-title">Informações Básicas</h3>
 
@@ -141,24 +124,24 @@ unset($_SESSION['mensagem']);
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" value="">
+          <input type="text" id="cpf" name="cpf" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="000.000.000-00"  value="">
         </div>
         
         <div class="flex-1">
           <label for="rg">RG:</label>
-          <input type="text" id="rg" name="rg" placeholder="00.000.000-0" value="">
+          <input type="text" id="rg" name="rg" maxlength="10" placeholder="00.000.000-0" oninput="this.value = this.value.replace(/\D/g, '')" value="">
         </div>
       </div>
 
       <div class="form-group row-flex">
         <div class="flex-1">
           <label for="telefone">Telefone:</label>
-          <input type="text" id="telefone" name="telefone" placeholder="(00) 00000-0000" value="">
+          <input type="text" id="telefone" maxlength="11" name="telefone" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="(00) 00000-0000" value="">
         </div>
 
         <div class="flex-1">
           <label for="cep">CEP:</label>
-          <input type="text" id="cep" name="cep" placeholder="00000-000" value="">
+          <input type="text" id="cep" name="cep" maxlength="8" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000" value="">
         </div>
       </div>
 
@@ -172,7 +155,7 @@ unset($_SESSION['mensagem']);
         
         <div class="flex-1">
           <label for="numero">Número:</label>
-          <input type="text" id="numero" name="numero" placeholder="Ex: 123" value="">
+          <input type="text" id="numero" name="numero" maxlength="5" placeholder="Ex: 123" value="">
         </div>
       </div>
 
@@ -191,12 +174,12 @@ unset($_SESSION['mensagem']);
       <div class="form-group row-flex">
         <div class="flex-2">
           <label for="cidade">Cidade:</label>
-          <input type="text" id="cidade" name="cidade" placeholder="Ex: São Paulo" value="">
+          <input type="text" id="cidade" name="cidade" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" placeholder="Ex: São Paulo" value="">
         </div>
         
         <div class="flex-1">
           <label for="estado">Estado:</label>
-          <input type="text" id="estado" name="estado" placeholder="Ex: SP" value="">
+          <input type="text" id="estado" name="estado" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" maxlength="2d placeholder="Ex: SP" value="">
         </div>
       </div>
 
@@ -206,10 +189,14 @@ unset($_SESSION['mensagem']);
         <textarea id="bio" name="bio" class="form-control" rows="5" placeholder="Sua relação com a cultura Hip Hop, estilos que dança, etc..."></textarea>
       </div>
 
+      
+
       <button type="submit" class="btn-submit">Salvar Alterações</button>
 
     </form>
   </div>
+
+
 
 
 </main>
