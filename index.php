@@ -1,3 +1,8 @@
+<head>
+    <title>Meu Site</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+
 <?php
 session_start();
 
