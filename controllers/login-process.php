@@ -17,8 +17,8 @@ if (empty($login) || empty($senha)) {
     exit();
 }
 
-// Consulta usando PDO
-$sql = "SELECT id_usuario, username, email_usuario, senha_usuario, tentativas_login, bloqueado_ate 
+// 👇 ATENÇÃO AQUI: Adicionado rg e cpf no SELECT
+$sql = "SELECT id_usuario, username, email_usuario, senha_usuario, tentativas_login, bloqueado_ate, rg, cpf 
         FROM usuario 
         WHERE username = :login OR email_usuario = :login_email";
 
@@ -37,7 +37,7 @@ if ($usuario) {
         exit();
     }
 
-if (password_verify($senha, $usuario['senha_usuario'])) {
+    if (password_verify($senha, $usuario['senha_usuario'])) {
         // Reset de tentativas usando PDO
         $sqlReset = "UPDATE usuario SET tentativas_login = 0, bloqueado_ate = NULL WHERE id_usuario = :id";
         $stmtReset = $conn->prepare($sqlReset);
@@ -48,17 +48,16 @@ if (password_verify($senha, $usuario['senha_usuario'])) {
         unset($_SESSION['login_antigo']);
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['username']   = $usuario['username'];
-        
-        // 👇 ADICIONADO: Salva o e-mail na sessão para o menu dropdown
         $_SESSION['email_usuario'] = $usuario['email_usuario']; 
 
-        // 👇 ATUALIZADO: Redireciona para o Controlador do Dashboard respeitando a arquitetura MVC
+        // 👇 NOVA REGRA: Verifica se os campos rg e cpf NÃO estão vazios
+        $_SESSION['documentos_completos'] = (!empty($usuario['rg']) && !empty($usuario['cpf']));
+
         header("Location: dashboard-process.php"); 
         exit();
     } else {
         $novaTentativa = (int)$usuario['tentativas_login'] + 1;
         if ($novaTentativa >= 5) {
-            // Bloqueio usando PDO
             $sqlBloqueio = "UPDATE usuario SET tentativas_login = :tentativas, bloqueado_ate = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE id_usuario = :id";
             $stmtBloqueio = $conn->prepare($sqlBloqueio);
             $stmtBloqueio->execute([
@@ -67,7 +66,6 @@ if (password_verify($senha, $usuario['senha_usuario'])) {
             ]);
             $_SESSION['erro_login'] = "Muitas tentativas de login. Tente novamente em 10 minutos.";
         } else {
-            // Atualiza tentativa usando PDO
             $sqlTentativa = "UPDATE usuario SET tentativas_login = :tentativas WHERE id_usuario = :id";
             $stmtTentativa = $conn->prepare($sqlTentativa);
             $stmtTentativa->execute([
