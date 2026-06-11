@@ -74,6 +74,34 @@ unset($_SESSION['mensagem']);
 </a>
   </div>
   
+  <form class="search-sympla" action="busca.php" method="GET">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 2a8 8 0 016.32 12.9l4.387 4.387a1 1 0 01-1.414 1.415l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"/></svg>
+      <input type="text" name="evento" placeholder="Buscar eventos, artistas...">
+    </div>
+
+    <div class="location-box">
+      <svg class="location-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
+      <span id="locationSelectedText">Qualquer lugar</span>
+      <input type="hidden" name="cidade" id="cidadeInput" value="">
+      <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
+
+      <ul class="location-menu" id="locationMenu">
+        <li class="location-item use-location" data-value="gps">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" fill="currentColor"/></svg>
+          Usar minha localização atual
+        </li>
+        <li class="location-item" data-value="">Qualquer lugar</li>
+        <li class="location-item" data-value="SP">São Paulo (SP)</li>
+        <li class="location-item" data-value="SC">Santa Catarina (SC)</li>
+        <li class="location-item" data-value="RJ">Rio de Janeiro (RJ)</li>
+        <li class="location-item" data-value="PR">Paraná (PR)</li>
+        <li class="location-item" data-value="MG">Minas Gerais (MG)</li>
+      </ul>
+    </div>
+    <button type="submit" style="display: none;">Buscar</button>
+  </form>
+
   <nav class="nav-links nav-desktop">
     <a href="../controllers/evento-process.php" class="nav-item">
       <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg>
