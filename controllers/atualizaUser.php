@@ -18,7 +18,7 @@ $id_usuario = $_SESSION['id_usuario'];
 // 3. Verificar se a requisição veio via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Captura os dados e remove espaços extras 
+    // Captura os dados e remove espaços extras
     $username      = trim($_POST['username'] ?? '');
     $nome_usuario  = trim($_POST['nome_completo'] ?? ''); 
     $email_usuario = trim($_POST['email'] ?? '');         

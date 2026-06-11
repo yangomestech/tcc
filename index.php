@@ -1,12 +1,7 @@
-<head>
-    <title>Meu Site</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-</head>
-
 <?php
 session_start();
 
-// Roteamento de logout super simples e direto
+// Logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_unset();
     session_destroy();
@@ -14,12 +9,19 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
-// Verifica controle de acesso
+// Controle de acesso
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: views/login.php");
     exit();
-} else {
-    // Carrega a view principal do sistema protegido
-    require_once 'views/dashboard.php';
 }
+
+?>
+
+<head>
+    <title>Beatstreet</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<?php
+require_once 'views/dashboard.php';
 ?>
