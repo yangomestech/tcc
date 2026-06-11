@@ -84,7 +84,7 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
 
             <?= $mensagem ?>
 
-            <form method="POST" action="../controllers/evento-process.php" enctype="multipart/form-data">
+            <form action="../controllers/evento-process.php" method="POST" enctype="multipart/form-data">
                 
                 <input type="hidden" name="id_evento_edit" value="<?= $is_edit ? htmlspecialchars($evento_edit['id_evento']) : '' ?>">
                 

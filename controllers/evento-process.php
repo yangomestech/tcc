@@ -46,24 +46,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $estilos = isset($_POST['estilos']) ? $_POST['estilos'] : [];
     $caminho_imagem = null;
 
-    // LÓGICA DE UPLOAD DE IMAGEM
-    if (isset($_FILES['imagem_evento']) && $_FILES['imagem_evento']['error'] === UPLOAD_ERR_OK) {
-        $extensao = strtolower(pathinfo($_FILES['imagem_evento']['name'], PATHINFO_EXTENSION));
-        $formatos_permitidos = ['jpg', 'jpeg', 'png', 'webp'];
+// LÓGICA DE UPLOAD DE IMAGEM TRATADA E PREVENTIVA
+    if (isset($_FILES['imagem_evento'])) {
+        $error_code = $_FILES['imagem_evento']['error'];
         
-        if (in_array($extensao, $formatos_permitidos)) {
-            $novo_nome = uniqid('evento_') . '.' . $extensao;
-            $diretorio_destino = '../uploads/eventos/';
+        if ($error_code === UPLOAD_ERR_OK) {
+            $extensao = strtolower(pathinfo($_FILES['imagem_evento']['name'], PATHINFO_EXTENSION));
+            $formatos_permitidos = ['jpg', 'jpeg', 'png', 'webp'];
             
-            if (!is_dir($diretorio_destino)) {
-                mkdir($diretorio_destino, 0755, true);
+            if (in_array($extensao, $formatos_permitidos)) {
+                $novo_nome = uniqid('evento_') . '.' . $extensao;
+                $diretorio_destino = '../uploads/eventos/';
+                
+                if (!is_dir($diretorio_destino)) {
+                    mkdir($diretorio_destino, 0755, true);
+                }
+                
+                if (move_uploaded_file($_FILES['imagem_evento']['tmp_name'], $diretorio_destino . $novo_nome)) {
+                    // Guarda estritamente o formato limpo, sem poluição de caminhos relativos
+                    $caminho_imagem = 'uploads/eventos/' . $novo_nome; 
+                } else {
+                    $mensagem = "<div class='msg-erro'>Erro interno do servidor ao mover o ficheiro para o diretório de destino. Verifique as permissões de escrita da pasta.</div>";
+                }
+            } else {
+                $mensagem = "<div class='msg-erro'>Formato de imagem inválido. Use apenas JPG, JPEG, PNG ou WEBP.</div>";
             }
-            
-            if (move_uploaded_file($_FILES['imagem_evento']['tmp_name'], $diretorio_destino . $novo_nome)) {
-                $caminho_imagem = 'uploads/eventos/' . $novo_nome; // Caminho relativo salvo no banco
+        } elseif ($error_code !== UPLOAD_ERR_NO_FILE) {
+            // Se não for 'UPLOAD_ERR_NO_FILE' (quando o utilizador simplesmente opta por não enviar foto), captura o erro do PHP
+            switch ($error_code) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $mensagem = "<div class='msg-erro'>O ficheiro enviado excede o tamanho máximo permitido pelo servidor (verifique as diretivas do php.ini).</div>";
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $mensagem = "<div class='msg-erro'>O upload do ficheiro foi feito apenas parcialmente. Tente novamente.</div>";
+                    break;
+                default:
+                    $mensagem = "<div class='msg-erro'>Falha crítica no upload do ficheiro. Código do erro PHP: " . $error_code . "</div>";
+                    break;
             }
-        } else {
-            $mensagem = "<div class='msg-erro'>Formato de imagem inválido. Use JPG, PNG ou WEBP.</div>";
         }
     }
 
