@@ -7,7 +7,7 @@ $hora_br = substr($ev['horario_evento'], 0, 5);
 
 <div class="evento-card card">
     <div class="card-img-box">
-        <img src="<?= htmlspecialchars($imagem) ?>" alt="Cartaz">
+        <img src="<?= htmlspecialchars($imagem) ?>"> 
     </div>
     
     <div class="card-content" style="display: flex; flex-direction: column; gap: 6px; padding: 16px;">

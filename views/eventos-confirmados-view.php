@@ -84,7 +84,11 @@
             <h2 class="section-divider">Próximos Eventos</h2>
             <div class="events-grid">
                 <?php foreach ($eventos_futuros as $ev): ?>
-                    <?php require __DIR__ . '/components/card-evento.php'; // Inclusão isolada do card ?>
+                    <?php 
+                        // Correção: Executa a atribuição estritamente dentro da tag PHP
+                        $imagem = $ev['imagem_render']; 
+                        require __DIR__ . '/components/card-evento.php'; 
+                    ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -93,7 +97,11 @@
             <h2 class="section-divider passados-titulo">Eventos Encerrados</h2>
             <div class="events-grid passados-grid">
                 <?php foreach ($eventos_passados as $ev): ?>
-                    <?php require __DIR__ . '/components/card-evento.php'; ?>
+                    <?php 
+                        // Correção: Garante que a imagem também é injetada nos eventos antigos
+                        $imagem = $ev['imagem_render']; 
+                        require __DIR__ . '/components/card-evento.php'; 
+                    ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
