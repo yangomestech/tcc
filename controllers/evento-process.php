@@ -26,12 +26,18 @@ $mensagem = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $id_tipo        = $_POST['id_tipo'];
+    $id_tipo        = (int) $_POST['id_tipo']; // Cast explícito para inteiro
     $nome_evento    = $_POST['nome_evento'];
     $data_evento    = $_POST['data_evento'];
-    $horario_evento = $_POST['horario_evento'];
-    $descricao      = $_POST['descricao'];
-    $mc_host        = !empty($_POST['mc_host']) ? $_POST['mc_host'] : null;
+    $horario_evento = $_POST['horario_evento'];    
+    // Captura e remove espaços extras nas pontas
+    $descricao = trim($_POST['descricao']);
+    // SANITIZAÇÃO COMPLEMENTAR: Limite de Caracteres no Backend
+    if (mb_strlen($descricao, 'UTF-8') > 500) {
+        $mensagem = "<div class='msg-erro'>Erro de Validação: A descrição excede o limite máximo de 500 caracteres.</div>";
+    }
+
+    $mc_host = !empty($_POST['mc_host']) ? trim($_POST['mc_host']) : null;
     $dj             = !empty($_POST['dj']) ? $_POST['dj'] : null;
     
     // Localização
@@ -44,9 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $complemento = !empty($_POST['complemento']) ? $_POST['complemento'] : null;
 
     $estilos = isset($_POST['estilos']) ? $_POST['estilos'] : [];
+
+    // =========================================================================
+    // SANITIZAÇÃO COMPLEMENTAR: Regra de Negócio de Tipos de Evento
+    // =========================================================================
+    // Se o evento for Batalha de Rima (3) ou Slam (4), ignora qualquer estilo de dança injetado
+    if ($id_tipo === 3 || $id_tipo === 4) {
+        $estilos = []; 
+    }
+    // =========================================================================
+
     $caminho_imagem = null;
 
-// LÓGICA DE UPLOAD DE IMAGEM TRATADA E PREVENTIVA
+    // LÓGICA DE UPLOAD DE IMAGEM TRATADA E PREVENTIVA
     if (isset($_FILES['imagem_evento'])) {
         $error_code = $_FILES['imagem_evento']['error'];
         
@@ -88,54 +104,146 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // NOVA LÓGICA DE PERSISTÊNCIA (INSERT vs UPDATE)
     if(empty($mensagem)) {
         try {
             $conn->beginTransaction();
 
-            $sqlEvento = "INSERT INTO evento 
-                (id_usuario, id_tipo, nome_evento, data_evento, horario_evento, descricao, imagem_evento, mc_host, dj, cep, estado, cidade, bairro, rua, numero, complemento) 
-                VALUES 
-                (:id_usuario, :id_tipo, :nome_evento, :data_evento, :horario_evento, :descricao, :imagem_evento, :mc_host, :dj, :cep, :estado, :cidade, :bairro, :rua, :numero, :complemento)";
-            
-            $stmt = $conn->prepare($sqlEvento);
-            $stmt->execute([
-                ':id_usuario'    => $_SESSION['id_usuario'],
-                ':id_tipo'       => $id_tipo,
-                ':nome_evento'   => $nome_evento,
-                ':data_evento'   => $data_evento,
-                ':horario_evento'=> $horario_evento,
-                ':descricao'     => $descricao,
-                ':imagem_evento' => $caminho_imagem,
-                ':mc_host'       => $mc_host,
-                ':dj'            => $dj,
-                ':cep'           => $cep,
-                ':estado'        => $estado,
-                ':cidade'        => $cidade,
-                ':bairro'        => $bairro,
-                ':rua'           => $rua,
-                ':numero'        => $numero,
-                ':complemento'   => $complemento
-            ]);
+            // Captura o ID do evento oculto no form (se existir, é um UPDATE)
+            $id_evento_edit = !empty($_POST['id_evento_edit']) ? filter_var($_POST['id_evento_edit'], FILTER_VALIDATE_INT) : null;
 
-            $id_evento_gerado = $conn->lastInsertId();
-
-            if (!empty($estilos)) {
-                $sqlEstilo = "INSERT INTO ligacao_evento_estilo (id_evento, id_estilo_danca) VALUES (:id_evento, :id_estilo)";
-                $stmtEstilo = $conn->prepare($sqlEstilo);
-                foreach ($estilos as $id_estilo) {
-                    $stmtEstilo->execute([
-                        ':id_evento' => $id_evento_gerado,
-                        ':id_estilo' => $id_estilo
-                    ]);
+            if ($id_evento_edit) {
+                // ==========================================
+                // FLUXO DE EDIÇÃO (UPDATE)
+                // ==========================================
+                
+                // Validação de Segurança (IDOR): Garante que o evento pertence ao cara logado
+                $stmtCheck = $conn->prepare("SELECT id_evento FROM evento WHERE id_evento = :id_evento AND id_usuario = :id_usuario");
+                $stmtCheck->execute([':id_evento' => $id_evento_edit, ':id_usuario' => $_SESSION['id_usuario']]);
+                if (!$stmtCheck->fetch()) {
+                    throw new Exception("Evento não encontrado ou acesso não autorizado.");
                 }
+
+                // Constrói a query de Update
+                $sqlEvento = "UPDATE evento SET 
+                                id_tipo = :id_tipo, 
+                                nome_evento = :nome_evento, 
+                                data_evento = :data_evento, 
+                                horario_evento = :horario_evento, 
+                                descricao = :descricao, 
+                                mc_host = :mc_host, 
+                                dj = :dj, 
+                                cep = :cep, 
+                                estado = :estado, 
+                                cidade = :cidade, 
+                                bairro = :bairro, 
+                                rua = :rua, 
+                                numero = :numero, 
+                                complemento = :complemento";
+
+                // Se uma nova imagem foi enviada, adicionamos ao UPDATE. Se não, preservamos a existente.
+                if ($caminho_imagem) {
+                    $sqlEvento .= ", imagem_evento = :imagem_evento";
+                }
+
+                $sqlEvento .= " WHERE id_evento = :id_evento AND id_usuario = :id_usuario";
+                
+                $stmt = $conn->prepare($sqlEvento);
+                
+                // Bind dos parâmetros padrões
+                $stmt->bindValue(':id_tipo', $id_tipo, PDO::PARAM_INT);
+                $stmt->bindValue(':nome_evento', $nome_evento);
+                $stmt->bindValue(':data_evento', $data_evento);
+                $stmt->bindValue(':horario_evento', $horario_evento);
+                $stmt->bindValue(':descricao', $descricao);
+                $stmt->bindValue(':mc_host', $mc_host);
+                $stmt->bindValue(':dj', $dj);
+                $stmt->bindValue(':cep', $cep);
+                $stmt->bindValue(':estado', $estado);
+                $stmt->bindValue(':cidade', $cidade);
+                $stmt->bindValue(':bairro', $bairro);
+                $stmt->bindValue(':rua', $rua);
+                $stmt->bindValue(':numero', $numero);
+                $stmt->bindValue(':complemento', $complemento);
+                $stmt->bindValue(':id_evento', $id_evento_edit, PDO::PARAM_INT);
+                $stmt->bindValue(':id_usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
+                
+                // Bind condicional da imagem
+                if ($caminho_imagem) {
+                    $stmt->bindValue(':imagem_evento', $caminho_imagem);
+                }
+
+                $stmt->execute();
+
+                // Gestão Pivot: Limpa os estilos antigos antes de salvar os novos
+                $stmtDelEstilos = $conn->prepare("DELETE FROM ligacao_evento_estilo WHERE id_evento = :id_evento");
+                $stmtDelEstilos->execute([':id_evento' => $id_evento_edit]);
+
+                // Re-insere os estilos de dança atualizados
+                if (!empty($estilos)) {
+                    $sqlEstilo = "INSERT INTO ligacao_evento_estilo (id_evento, id_estilo_danca) VALUES (:id_evento, :id_estilo)";
+                    $stmtEstilo = $conn->prepare($sqlEstilo);
+                    foreach ($estilos as $id_estilo) {
+                        $stmtEstilo->execute([
+                            ':id_evento' => $id_evento_edit,
+                            ':id_estilo' => $id_estilo
+                        ]);
+                    }
+                }
+
+                $mensagem = "<div class='msg-sucesso'>Alterações do evento salvas com sucesso!</div>";
+
+            } else {
+                // ==========================================
+                // FLUXO DE CRIAÇÃO (INSERT - SEU CÓDIGO ORIGINAL)
+                // ==========================================
+                
+                $sqlEvento = "INSERT INTO evento 
+                    (id_usuario, id_tipo, nome_evento, data_evento, horario_evento, descricao, imagem_evento, mc_host, dj, cep, estado, cidade, bairro, rua, numero, complemento) 
+                    VALUES 
+                    (:id_usuario, :id_tipo, :nome_evento, :data_evento, :horario_evento, :descricao, :imagem_evento, :mc_host, :dj, :cep, :estado, :cidade, :bairro, :rua, :numero, :complemento)";
+                
+                $stmt = $conn->prepare($sqlEvento);
+                $stmt->execute([
+                    ':id_usuario'    => $_SESSION['id_usuario'],
+                    ':id_tipo'       => $id_tipo,
+                    ':nome_evento'   => $nome_evento,
+                    ':data_evento'   => $data_evento,
+                    ':horario_evento'=> $horario_evento,
+                    ':descricao'     => $descricao,
+                    ':imagem_evento' => $caminho_imagem,
+                    ':mc_host'       => $mc_host,
+                    ':dj'            => $dj,
+                    ':cep'           => $cep,
+                    ':estado'        => $estado,
+                    ':cidade'        => $cidade,
+                    ':bairro'        => $bairro,
+                    ':rua'           => $rua,
+                    ':numero'        => $numero,
+                    ':complemento'   => $complemento
+                ]);
+
+                $id_evento_gerado = $conn->lastInsertId();
+
+                if (!empty($estilos)) {
+                    $sqlEstilo = "INSERT INTO ligacao_evento_estilo (id_evento, id_estilo_danca) VALUES (:id_evento, :id_estilo)";
+                    $stmtEstilo = $conn->prepare($sqlEstilo);
+                    foreach ($estilos as $id_estilo) {
+                        $stmtEstilo->execute([
+                            ':id_evento' => $id_evento_gerado,
+                            ':id_estilo' => $id_estilo
+                        ]);
+                    }
+                }
+
+                $mensagem = "<div class='msg-sucesso'>Evento publicado com sucesso na cena!</div>";
             }
 
             $conn->commit();
-            $mensagem = "<div class='msg-sucesso'>Evento publicado com sucesso na cena!</div>";
 
         } catch (Exception $e) {
             $conn->rollBack();
-            $mensagem = "<div class='msg-erro'>Erro ao salvar o evento: " . $e->getMessage() . "</div>";
+            $mensagem = "<div class='msg-erro'>Erro ao salvar o evento: " . htmlspecialchars($e->getMessage()) . "</div>";
         }
     }
 }

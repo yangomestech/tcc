@@ -83,3 +83,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const radiosTipo = document.querySelectorAll('input[name="id_tipo"]');
+    const blocoDanca = document.getElementById('bloco_estilos_danca');
+    const checkboxesDanca = document.querySelectorAll('.checkbox-estilo');
+
+    function gerenciarEstilosDanca() {
+        const selecionado = document.querySelector('input[name="id_tipo"]:checked');
+        if (!selecionado) return;
+
+        const idTipo = parseInt(selecionado.value, 10);
+        
+        // Tipos: 1 = Dança, 2 = Jam. Ambos usam estilos de dança.
+        // Tipos: 3 = Rima, 4 = Slam. Não usam.
+        if (idTipo === 1 || idTipo === 2) {
+            blocoDanca.style.display = 'block';
+        } else {
+            blocoDanca.style.display = 'none';
+            // Zera as opções para evitar envio acidental de dados ocultos
+            checkboxesDanca.forEach(cb => cb.checked = false);
+        }
+    }
+
+    // Executa no load da página (crucial para a tela de Editar Evento)
+    gerenciarEstilosDanca();
+
+    // Adiciona o listener para reagir aos cliques do usuário
+    radiosTipo.forEach(radio => {
+        radio.addEventListener('change', gerenciarEstilosDanca);
+    });
+});
+

@@ -50,7 +50,7 @@ $estilos_danca = $estilos_danca ?? [];
                     <ul class="dropdown-list">
                         <li><a href="../views/usuario.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg> Minha conta</a></li>
                         
-                        <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
+                        <li><a href="../controllers/favoritos-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
                         
                         <li><a href="../controllers/evento-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento</a></li>
                         
@@ -148,7 +148,7 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
                 <h3 class="section-title"><span class="num">3</span> Descrição do Evento</h3>
                 <div class="form-group">
                     <label for="descricao">Conte mais detalhes sobre o evento: *</label>
-                    <textarea id="descricao" name="descricao" class="form-control" required><?= $is_edit ? htmlspecialchars($evento_edit['descricao']) : '' ?></textarea>
+                    <textarea id="descricao" name="descricao" class="form-control" maxlength="500" required><?= $is_edit ? htmlspecialchars($evento_edit['descricao']) : '' ?></textarea>
                 </div>
 
                 <div class="form-group row-flex">
@@ -200,9 +200,33 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit"><?= $is_edit ? "Salvar Alterações" : "Publicar Evento" ?></button>
-            </form>
-        </div>
+                <div class="form-actions" style="display: flex; gap: 15px; margin-top: 30px;">
+    <button type="submit" name="action" value="<?= $is_edit ? 'update' : 'create' ?>" class="btn-submit" style="flex: 1;">
+        <?= $is_edit ? "Salvar Alterações" : "Publicar Evento" ?>
+    </button>
+    
+    <?php if ($is_edit): ?>
+        <button type="button" class="btn-delete" onclick="confirmarExclusao(<?= $evento_edit['id_evento'] ?>)">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/></svg>
+            Excluir Evento
+        </button>
+    <?php endif; ?>
+</div>
+</form> <?php if ($is_edit): ?>
+<form id="form-delete" action="../controllers/deletar-evento.php" method="POST" style="display: none;">
+    <input type="hidden" name="id_evento" id="delete_id_evento" value="">
+</form>
+
+<script>
+function confirmarExclusao(idEvento) {
+    // Validação brutal: exige confirmação antes de destruir os dados
+    if (confirm("Ação irreversível. Tem certeza que deseja apagar este evento?\nIsso removerá todas as presenças, favoritos e comentários associados.")) {
+        document.getElementById('delete_id_evento').value = idEvento;
+        document.getElementById('form-delete').submit();
+    }
+}
+</script>
+<?php endif; ?>
     </main>
 
     <script src="../assets/js/menu.js"></script>

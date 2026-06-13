@@ -293,22 +293,40 @@ select:focus {
     cursor: pointer;
 }
 
-.checkbox-group label {
-    display: inline-flex;
-    align-items: center;
-    font-weight: 400;
-    margin-right: 20px;
-    margin-bottom: 12px;
-    color: #aaaaaa;
-    cursor: pointer;
-}
-
 input[type="checkbox"] {
-    accent-color: #f75c03;
+    appearance: none;
+    -webkit-appearance: none;
+
     width: 18px;
     height: 18px;
+
     margin-right: 8px;
     cursor: pointer;
+
+    border: 2px solid #666;
+    border-radius: 4px;
+    background: #1a1a1a;
+
+    transition: all .2s ease;
+}
+
+input[type="checkbox"]:hover {
+    border-color: #f75c03;
+}
+
+input[type="checkbox"]:checked {
+    background: #f75c03;
+    border-color: #f75c03;
+}
+
+input[type="checkbox"]:checked::before {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 14px;
 }
 
 .btn-submit {
@@ -506,3 +524,24 @@ textarea.form-control:focus {
 select {
     cursor: pointer;
 }
+
+.btn-delete {
+    background: transparent;
+    color: #ff4757;
+    border: 1px solid #ff4757;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-delete:hover {
+    background: rgba(255, 71, 87, 0.1);
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.2);
+}
+

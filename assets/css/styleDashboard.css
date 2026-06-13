@@ -667,3 +667,132 @@
       overflow: visible !important;
   }
 
+/* ========================================= */
+/* UX/UI: CARROSSEL DE DESTAQUES             */
+/* ========================================= */
+
+.carousel-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    /* Aplica o gradiente da marca no texto */
+    background: linear-gradient(90deg, var(--roxo), var(--laranja));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.carousel-header p {
+    color: #bbb;
+    font-size: 1rem;
+}
+
+.carousel-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px; /* Ajuste se o seu carrossel já tiver borda */
+    overflow: hidden;
+}
+
+/* * TRUQUE DE SENIOR: 
+ * Impede que o clique na tag <a> funcione nos slides laterais (que servem para navegação).
+ * Isso salva você de ter que reescrever a lógica do seu app.js!
+ */
+.carousel-item:not(.active) .carousel-link {
+    pointer-events: none;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Overlay dark-gradient para garantir que o texto branco seja lido independente da foto */
+.image-wrapper .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+}
+
+/* Efeito Hover Brutal (só funciona no slide ativo) */
+.carousel-item.active .carousel-link:hover .image-wrapper img {
+    transform: scale(1.05);
+}
+
+.badge-tipo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--roxo);
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    z-index: 10;
+}
+
+/* Sobrescrevendo a classe carousel-caption antiga */
+.carousel-caption {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    right: 25px;
+    text-align: left;
+    z-index: 10;
+    /* Remove text-shadow bizarro antigo, confia no overlay agora */
+    background: none; 
+    padding: 0;
+}
+
+.carousel-caption h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.carousel-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #ddd;
+    flex-wrap: wrap;
+}
+
+.carousel-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* Responsividade de Trincheira */
+@media (max-width: 768px) {
+    .carousel-header h2 { font-size: 1.6rem; }
+    .carousel-caption h3 { font-size: 1.3rem; }
+    .badge-tipo { top: 10px; left: 10px; font-size: 0.7rem; }
+    .carousel-meta { gap: 10px; }
+    .carousel-meta span { padding: 4px 8px; font-size: 0.8rem; }
+}
