@@ -113,15 +113,10 @@ if ($logado) {
   <button type="submit" style="display: none;">Buscar</button>
 </form>
 
-<section class="hero-top">
-  <div class="hero-text">
-    <?php if ($logado): ?>
-        <h1>Bem-vindo, <?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></h1>
-    <?php else: ?>
-        <h1>Conectando a cultura Hip Hop</h1>
-    <?php endif; ?>
-    <p>Todos os eventos da cultura Hip Hop em um só lugar</p>
-  </div>
+
+<section class="carousel-header">
+  <h2>Eventos em Destaque</h2>
+  <p>As melhores vivências da cultura selecionadas para você</p>
 </section>
 
 <section class="sympla-carousel">
@@ -129,14 +124,38 @@ if ($logado) {
     <?php if(!empty($eventosCarrossel)): ?>
         <?php foreach($eventosCarrossel as $index => $ev): 
             $imgFallback = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
+            $idEvento = $ev['id_evento'] ?? $ev['id'] ?? '#';
+            $tipoEvento = $ev['nome_tipo'] ?? 'Cultura Urbana';
+            $dataEvento = isset($ev['data_evento']) ? date('d/m/Y', strtotime($ev['data_evento'])) : 'Em breve';
+            $cidadeEvento = $ev['cidade'] ?? 'Vários locais';
         ?>
         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-          <img src="<?= htmlspecialchars($imgFallback) ?>" alt="<?= htmlspecialchars($ev['nome_evento']) ?>">
-          <div class="carousel-caption"><?= htmlspecialchars($ev['nome_evento']) ?></div>
+          <a href="../controllers/detalhe-evento.php?id=<?= $idEvento ?>" class="carousel-link">
+            <div class="image-wrapper">
+              <img src="<?= htmlspecialchars($imgFallback) ?>" alt="<?= htmlspecialchars($ev['nome_evento']) ?>">
+              <div class="overlay"></div>
+            </div>
+            
+            <span class="badge-tipo"><?= htmlspecialchars($tipoEvento) ?></span>
+            
+            <div class="carousel-caption">
+              <h3><?= htmlspecialchars($ev['nome_evento']) ?></h3>
+              <div class="carousel-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
+                  <?= htmlspecialchars($dataEvento) ?>
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
+                  <?= htmlspecialchars($cidadeEvento) ?>
+                </span>
+              </div>
+            </div>
+          </a>
         </div>
         <?php endforeach; ?>
     <?php else: ?>
-        <p style="text-align:center; color:#888;">Nenhum evento em destaque.</p>
+        <p style="text-align:center; color:#888;">Nenhum evento em destaque no momento.</p>
     <?php endif; ?>
   </div>
   

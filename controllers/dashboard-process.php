@@ -31,19 +31,14 @@ if ($logado) {
 // FUNÇÃO DE FALLBACK DE IMAGEM CORRIGIDA E SANITIZADA
 function getImagemFallback($caminho, $id_tipo) {
     if (!empty($caminho)) {
-        // Remove prefixos '../' ou '/' duplicados que existam na string do banco
         $caminho_limpo = ltrim($caminho, './');
-        
-        // Reconstrói o caminho absoluto exato para o sistema de ficheiros do Linux
         $caminho_absoluto = __DIR__ . '/../' . $caminho_limpo;
         
         if (file_exists($caminho_absoluto)) {
-            // Retorna o caminho relativo uniforme padrão para as views HTML
             return "../" . $caminho_limpo; 
         }
     }
     
-    // Fallback estático se o ficheiro físico não existir ou o registo for nulo
     switch($id_tipo) {
         case 1: return "../assets/img/computador1.jpg"; 
         case 2: return "../assets/img/computador2.jpg"; 
@@ -55,25 +50,33 @@ function getImagemFallback($caminho, $id_tipo) {
 
 $hoje = date('Y-m-d');
 
-// DESTAQUES
-$sqlDestaques = "SELECT e.*, COUNT(p.id_presenca) as total_presencas 
+// CORREÇÃO 1: Adicionado INNER JOIN na query principal de Destaques
+$sqlDestaques = "SELECT e.*, t.nome_tipo, COUNT(p.id_presenca) as total_presencas 
                  FROM evento e 
+                 INNER JOIN tipo_evento t ON e.id_tipo = t.id_tipo
                  LEFT JOIN presenca p ON e.id_evento = p.id_evento 
                  WHERE e.data_evento >= :hoje 
-                 GROUP BY e.id_evento 
+                 GROUP BY e.id_evento, t.nome_tipo 
                  ORDER BY total_presencas DESC, e.data_evento ASC 
                  LIMIT 5";
 $stmtDestaques = $conn->prepare($sqlDestaques);
 $stmtDestaques->execute([':hoje' => $hoje]);
 $eventosCarrossel = $stmtDestaques->fetchAll(PDO::FETCH_ASSOC);
 
+// CORREÇÃO 2: Adicionado INNER JOIN na query de fallback de Destaques
 if(empty($eventosCarrossel)) {
-    $stmtDestaques = $conn->prepare("SELECT * FROM evento WHERE data_evento >= :hoje ORDER BY data_evento ASC LIMIT 5");
+    $sqlFallbackDestaques = "SELECT e.*, t.nome_tipo 
+                             FROM evento e 
+                             INNER JOIN tipo_evento t ON e.id_tipo = t.id_tipo 
+                             WHERE e.data_evento >= :hoje 
+                             ORDER BY e.data_evento ASC 
+                             LIMIT 5";
+    $stmtDestaques = $conn->prepare($sqlFallbackDestaques);
     $stmtDestaques->execute([':hoje' => $hoje]);
     $eventosCarrossel = $stmtDestaques->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// CORREÇÃO 2: INNER JOIN para puxar 'nome_tipo' e 'organizador_arroba' pro card
+// TODOS OS EVENTOS (Query já estava correta)
 $sqlTodos = "SELECT e.*, t.nome_tipo, u.username as organizador_arroba,
              (SELECT COUNT(*) FROM presenca p WHERE p.id_evento = e.id_evento) as total_presencas
              FROM evento e 
@@ -112,7 +115,7 @@ if (empty($eventosProximos)) {
     $eventosProximos = array_slice($todosEventos, 0, 10);
 }
 
-// CORREÇÃO 3: Destruindo o HTML hardcoded e chamando o componente
+// Componente de renderização das linhas de cards
 function renderRowEventos($titulo, $eventos, $isLogado) {
     if (empty($eventos)) return;
     echo "<section class='section'>";
@@ -120,15 +123,14 @@ function renderRowEventos($titulo, $eventos, $isLogado) {
     echo "<div class='cards'>";
     
     foreach ($eventos as $ev) {
-        // Resolve a imagem aqui e passa pro componente
         $imagem = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
         include __DIR__ . '/../views/components/card-evento.php';
     }
     
     echo "</div></section>";
 }
-$todosEventos = $stmtTodos->fetchAll(PDO::FETCH_ASSOC);
 
+// CORREÇÃO 3: Linha duplicada de fetchAll removida daqui para não quebrar a listagem inferior
 
 require_once __DIR__ . '/../views/dashboard.php';
 ?>

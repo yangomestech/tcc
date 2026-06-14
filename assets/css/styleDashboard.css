@@ -671,19 +671,31 @@
 /* UX/UI: CARROSSEL DE DESTAQUES             */
 /* ========================================= */
 
+.carousel-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Centraliza no eixo cruzado (horizontal) */
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto 20px auto;
+  padding: 40px 20px 10px;
+}
+
 .carousel-header h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    /* Aplica o gradiente da marca no texto */
-    background: linear-gradient(90deg, var(--roxo), var(--laranja));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 5px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--roxo), var(--laranja));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 5px;
+  width: 100%; /* Garante que o H2 não encolha */
 }
 
 .carousel-header p {
-    color: #bbb;
-    font-size: 1rem;
+  color: #bbb;
+  font-size: 1rem;
+  width: 100%;
 }
 
 .carousel-link {
@@ -693,13 +705,13 @@
     position: relative;
     text-decoration: none;
     color: inherit;
-    border-radius: 12px; /* Ajuste se o seu carrossel já tiver borda */
+    border-radius: 15px; /* Sincronizado com o contêiner */
     overflow: hidden;
 }
 
-/* * TRUQUE DE SENIOR: 
- * Impede que o clique na tag <a> funcione nos slides laterais (que servem para navegação).
- * Isso salva você de ter que reescrever a lógica do seu app.js!
+/* * PROTEÇÃO DE CLIQUE (CRÍTICO)
+ * Desativa o link nos slides laterais. Sem isso, o usuário clica na lateral 
+ * para trazer o card para a frente, mas acaba sendo redirecionado por engano. 
  */
 .carousel-item:not(.active) .carousel-link {
     pointer-events: none;
@@ -719,39 +731,39 @@
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Overlay dark-gradient para garantir que o texto branco seja lido independente da foto */
+/* O overlay escuro é inegociável. Garante contraste para leitura mesmo se a imagem for toda branca */
 .image-wrapper .overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60%;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    height: 65%;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+    pointer-events: none;
 }
 
-/* Efeito Hover Brutal (só funciona no slide ativo) */
+/* Feedback visual de hover no desktop */
 .carousel-item.active .carousel-link:hover .image-wrapper img {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .badge-tipo {
     position: absolute;
     top: 20px;
     left: 20px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(5px);
     border: 1px solid var(--roxo);
     color: #fff;
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     border-radius: 6px;
     z-index: 10;
 }
 
-/* Sobrescrevendo a classe carousel-caption antiga */
 .carousel-caption {
     position: absolute;
     bottom: 25px;
@@ -759,7 +771,6 @@
     right: 25px;
     text-align: left;
     z-index: 10;
-    /* Remove text-shadow bizarro antigo, confia no overlay agora */
     background: none; 
     padding: 0;
 }
@@ -767,8 +778,9 @@
 .carousel-caption h3 {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
 .carousel-meta {
@@ -783,16 +795,19 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    padding: 6px 14px;
     border-radius: 20px;
+    font-weight: 500;
 }
 
-/* Responsividade de Trincheira */
+/* Responsividade Mobile */
 @media (max-width: 768px) {
     .carousel-header h2 { font-size: 1.6rem; }
-    .carousel-caption h3 { font-size: 1.3rem; }
-    .badge-tipo { top: 10px; left: 10px; font-size: 0.7rem; }
-    .carousel-meta { gap: 10px; }
-    .carousel-meta span { padding: 4px 8px; font-size: 0.8rem; }
+    .carousel-caption { bottom: 15px; left: 15px; right: 15px; }
+    .carousel-caption h3 { font-size: 1.3rem; margin-bottom: 8px; }
+    .badge-tipo { top: 15px; left: 15px; font-size: 0.7rem; padding: 4px 10px; }
+    .carousel-meta { gap: 8px; }
+    .carousel-meta span { padding: 4px 10px; font-size: 0.8rem; }
 }

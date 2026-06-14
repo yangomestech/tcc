@@ -133,6 +133,20 @@
   <?php endif; ?>
 </main>
 
+<div id="modalRemoveFavorite" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </div>
+        <h3>Remover dos Favoritos?</h3>
+        <p>Este evento será removido da sua lista de favoritos. Você poderá adicioná-lo novamente a qualquer momento.</p>
+        <div class="modal-actions">
+            <button id="btnCancelRemove" class="btn-modal-cancel">Cancelar</button>
+            <button id="btnConfirmRemove" class="btn-modal-delete">Remover dos Favoritos</button>
+        </div>
+    </div>
+</div>
+
 <script>
   const FAVORITOS_DATA = <?= json_encode($eventosFavoritos ?? []) ?>;
 </script>

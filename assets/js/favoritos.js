@@ -14,10 +14,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const panelPresences = document.getElementById("panelPresences");
     const panelDesc = document.getElementById("panelDescription");
     const panelLink = document.getElementById("panelLink");
-    const btnRemove = document.getElementById("btnRemoveFavorite");
+    const btnRemove = document.getElementById("btnRemoveFavorite"); // Botão do painel lateral
 
+    // Elementos do Modal Customizado
+    const modalRemove = document.getElementById('modalRemoveFavorite');
+    const btnCancelRemove = document.getElementById('btnCancelRemove');
+    const btnConfirmRemove = document.getElementById('btnConfirmRemove');
+
+    // Estado global para guardar qual evento está na "mira" para ser deletado
+    let eventoAlvoParaRemocao = null;
+
+    // Cláusula de guarda para parar a execução se não houver dados
     if (!FAVORITOS_DATA || FAVORITOS_DATA.length === 0) return;
 
+    // -----------------------------------------------------------------
+    // FUNÇÕES
+    // -----------------------------------------------------------------
+    
     // Função de reidratação estrutural com animação controlada
     function updateActivePanel(index) {
         const data = FAVORITOS_DATA[index];
@@ -42,6 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
             panelPresences.textContent = data.total_presencas;
             panelDesc.textContent = data.descricao || "Sem descrição disponível para este evento.";
             panelLink.href = `../controllers/detalhe-evento.php?id=${data.id_evento}`;
+            
+            // CORREÇÃO: Alimenta o data-id do botão com o ID do evento atualizado no estado
+            btnRemove.setAttribute("data-id", data.id_evento);
 
             // Sincronização visual da lista lateral
             items.forEach(item => item.classList.remove("active"));
@@ -53,7 +69,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 250);
     }
 
-    // Vinculação de eventos nos itens da lista (Playlist)
+    // -----------------------------------------------------------------
+    // INICIALIZAÇÃO E EVENTOS
+    // -----------------------------------------------------------------
+
+    // CORREÇÃO: Chamado APÓS a declaração da função para evitar erros de ciclo de vida
+    updateActivePanel(0);
+
+    // Vinculação de eventos nos itens da lista lateral (Playlist)
     items.forEach(item => {
         item.addEventListener("click", function() {
             const index = parseInt(this.getAttribute("data-index"));
@@ -63,46 +86,62 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Interceptação e tratamento assíncrono para remoção de favoritos
-    if (btnRemove) {
-        btnRemove.addEventListener("click", async () => {
-            const currentData = FAVORITOS_DATA[currentIndex];
-            if (!currentData) return;
+    // 1. Intercepta o clique no painel e ABRE o modal em vez de disparar confirm()
+    btnRemove.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Captura o ID injetado dinamicamente pela função updateActivePanel
+        eventoAlvoParaRemocao = this.getAttribute('data-id'); 
+        
+        if (!eventoAlvoParaRemocao) {
+            console.error("Erro: O ID do evento não foi encontrado no botão.");
+            return;
+        }
 
-            if (!confirm(`Deseja remover "${currentData.nome_evento}" dos seus favoritos?`)) return;
+        modalRemove.style.display = 'flex'; // Exibe o modal
+    });
 
-            // Transição para estado de carregamento visual
-            btnRemove.disabled = true;
-            btnRemove.textContent = "Removendo...";
+    // 2. Ação de Cancelar no Modal (Reseta o estado e esconde)
+    btnCancelRemove.addEventListener('click', () => {
+        modalRemove.style.display = 'none';
+        eventoAlvoParaRemocao = null; 
+    });
 
-            try {
-                const formData = new FormData();
-                formData.append("action", "remove");
-                formData.append("id_evento", currentData.id_evento);
+    // 3. Ação de Confirmar no Modal (Executa a requisição real via Fetch)
+    btnConfirmRemove.addEventListener('click', async () => {
+        if (!eventoAlvoParaRemocao) return;
 
-                const response = await fetch("favoritos-process.php", {
-                    method: "POST",
-                    body: formData
-                });
+        // Trava os controles para evitar concorrência/duplo clique do usuário
+        btnConfirmRemove.disabled = true;
+        btnConfirmRemove.innerText = 'Removendo...';
+        btnCancelRemove.disabled = true;
 
-                const result = await response.json();
+        try {
+            const formData = new FormData();
+            formData.append('action', 'remove');
+            formData.append('id_evento', eventoAlvoParaRemocao);
 
-                if (result.success) {
-                    // Recarga estratégica da página para recalcular índices e estados vazios
-                    window.location.reload();
-                } else {
-                    alert(result.message || "Falha ao remover item.");
-                    btnRemove.disabled = false;
-                    btnRemove.textContent = "Remover dos Favoritos";
-                }
-            } catch (error) {
-                alert("Erro de comunicação com o servidor.");
-                btnRemove.disabled = false;
-                btnRemove.textContent = "Remover dos Favoritos";
+            const response = await fetch('../controllers/favoritos-process.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.reload(); 
+            } else {
+                alert('Falha na remoção: ' + result.message);
             }
-        });
-    }
-
-    // Inicialização da primeira carga estrutural do painel
-    updateActivePanel(currentIndex);
+        } catch (error) {
+            console.error("Erro na comunicação com o servidor:", error);
+        } finally {
+            // Restaura a UI caso falhe
+            btnConfirmRemove.disabled = false;
+            btnCancelRemove.disabled = false;
+            btnConfirmRemove.innerText = 'Remover dos Favoritos';
+            modalRemove.style.display = 'none';
+            eventoAlvoParaRemocao = null;
+        }
+    });
 });

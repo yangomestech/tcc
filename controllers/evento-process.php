@@ -25,7 +25,8 @@ require_once '../config/.conexao.php';
 $mensagem = ''; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
+    $form_data = $_POST;
     $id_tipo        = (int) $_POST['id_tipo']; // Cast explícito para inteiro
     $nome_evento    = $_POST['nome_evento'];
     $data_evento    = $_POST['data_evento'];
@@ -72,17 +73,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (in_array($extensao, $formatos_permitidos)) {
                 $novo_nome = uniqid('evento_') . '.' . $extensao;
-                $diretorio_destino = '../uploads/eventos/';
+                // CORREÇÃO: Uso de __DIR__ para garantir o path absoluto no servidor
+                $diretorio_destino = realpath(__DIR__ . '/../') . '/uploads/eventos/';
                 
                 if (!is_dir($diretorio_destino)) {
-                    mkdir($diretorio_destino, 0755, true);
+                    // Adicionado tratamento mais rigoroso para criação de pasta
+                    mkdir($diretorio_destino, 0775, true); 
                 }
                 
                 if (move_uploaded_file($_FILES['imagem_evento']['tmp_name'], $diretorio_destino . $novo_nome)) {
-                    // Guarda estritamente o formato limpo, sem poluição de caminhos relativos
+                    // Guarda estritamente o formato limpo
                     $caminho_imagem = 'uploads/eventos/' . $novo_nome; 
                 } else {
-                    $mensagem = "<div class='msg-erro'>Erro interno do servidor ao mover o ficheiro para o diretório de destino. Verifique as permissões de escrita da pasta.</div>";
+                    // Mensagem mais explícita caso as permissões do Linux continuem erradas
+                    $mensagem = "<div class='msg-erro'>Erro de I/O: Permissão negada ao salvar a imagem. Execute 'chmod -R 775 uploads/' e 'chown -R www-data:www-data uploads/' no servidor.</div>";
                 }
             } else {
                 $mensagem = "<div class='msg-erro'>Formato de imagem inválido. Use apenas JPG, JPEG, PNG ou WEBP.</div>";
@@ -250,6 +254,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $tipos_evento = $conn->query("SELECT id_tipo, nome_tipo FROM tipo_evento ORDER BY nome_tipo")->fetchAll(PDO::FETCH_ASSOC);
 $estilos_danca = $conn->query("SELECT id_estilo_danca, nome_estilo FROM estilo_danca ORDER BY nome_estilo")->fetchAll(PDO::FETCH_ASSOC);
+
+if (!empty($mensagem) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    $evento_edit = [
+        'id_evento'       => $_POST['id_evento_edit'] ?? '',
+        'nome_evento'     => $_POST['nome_evento'] ?? '',
+        'id_tipo'         => $_POST['id_tipo'] ?? '',
+        'data_evento'     => $_POST['data_evento'] ?? '',
+        'horario_evento'  => $_POST['horario_evento'] ?? '',
+        'descricao'       => $_POST['descricao'] ?? '',
+        'mc_host'         => $_POST['mc_host'] ?? '',
+        'dj'              => $_POST['dj'] ?? '',
+        'cep'             => $_POST['cep'] ?? '',
+        'estado'          => $_POST['estado'] ?? '',
+        'cidade'          => $_POST['cidade'] ?? '',
+        'bairro'          => $_POST['bairro'] ?? '',
+        'rua'             => $_POST['rua'] ?? '',
+        'numero'          => $_POST['numero'] ?? '',
+        'complemento'     => $_POST['complemento'] ?? ''
+    ];
+
+    $estilos_selecionados = $_POST['estilos'] ?? [];
+}
 
 require_once '../views/cadastro-evento.php';
 ?>

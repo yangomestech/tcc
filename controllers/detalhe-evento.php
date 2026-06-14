@@ -168,14 +168,15 @@ try {
 $data_formatada = date('d/m/Y', strtotime($evento['data_evento']));
 $horario_formatado = substr($evento['horario_evento'], 0, 5);
 
+// CORREÇÃO: Adicionado "../" para sair da pasta atual e acessar a raiz de uploads corretamente
 if (!empty($evento['imagem_evento'])) {
-    $imagem_url = $evento['imagem_evento'];
+    $imagem_url = "../" . ltrim($evento['imagem_evento'], './');
 } else {
     switch($evento['id_tipo']) {
-        case 1: $imagem_url = "https://images.unsplash.com/photo-1535525153412-5a42439a210d?q=80&w=800&auto=format&fit=crop"; break; 
-        case 2: $imagem_url = "https://images.unsplash.com/photo-1520975922323-3c36e27c0f06?q=80&w=800&auto=format&fit=crop"; break; 
-        case 3: $imagem_url = "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?q=80&w=800&auto=format&fit=crop"; break; 
-        case 4: $imagem_url = "https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=800&auto=format&fit=crop"; break; 
+        case 1: $imagem_url = "../assets/img/computador1.jpg"; break;
+        case 2: $imagem_url = "../assets/img/computador2.jpg"; break;
+        case 3: $imagem_url = "../assets/img/computador3.jpg"; break;
+        case 4: $imagem_url = "../assets/img/computador4.jpg"; break;
         default: $imagem_url = "../assets/img/computador1.jpg"; break;
     }
 }

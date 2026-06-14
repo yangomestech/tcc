@@ -105,7 +105,7 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
 
                 <div class="form-group">
                     <label for="nome_evento">Nome do Evento: *</label>
-                    <input type="text" id="nome_evento" name="nome_evento" placeholder="Ex: Batalha da Aldeia" value="<?= $is_edit ? htmlspecialchars($evento_edit['nome_evento']) : '' ?>" required>
+                    <input type="text" id="nome_evento" name="nome_evento" value="<?= htmlspecialchars($evento_edit['nome_evento'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -123,7 +123,11 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
                 <div class="form-group checkbox-group" id="bloco_estilos_danca" style="display: block;">
                     <label style="display: block; color: #fff; margin-bottom: 10px;">Quais estilos de dança estarão na roda? *</label>
                     <?php 
-                        $estilos_marcados = $estilos_selecionados ?? []; 
+                        $estilos_marcados = $estilos_selecionados ?? [];
+
+                        if (empty($estilos_marcados) && !empty($evento_edit)) {
+                            $estilos_marcados = $estilos_selecionados ?? [];
+                        }
                     ?>
                     <?php foreach ($estilos_danca as $estilo): ?>
                         <label>
@@ -137,28 +141,38 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="data_evento">Data de Início: *</label>
-                        <input type="date" id="data_evento" name="data_evento" value="<?= $is_edit ? $evento_edit['data_evento'] : '' ?>" required onclick="this.showPicker()">
+                        <input type="date" id="data_evento" name="data_evento" value="<?= htmlspecialchars($evento_edit['data_evento'] ?? '') ?>" required onclick="this.showPicker()">
                     </div>
                     <div class="flex-1">
-                        <label for="horario_evento">Horário de Início: *</label>
-                        <input type="time" id="horario_evento" name="horario_evento" value="<?= $is_edit ? substr($evento_edit['horario_evento'], 0, 5) : '' ?>" required>
-                    </div>
+    <label for="horario_evento">Horário de Início: *</label>
+    
+    <div class="custom-time-select" id="custom_time_wrapper">
+        <div class="time-select-trigger" id="time_trigger">
+            <span>Selecione a data primeiro...</span>
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
+        </div>
+        <ul class="time-options-list" id="time_options_list">
+            </ul>
+    </div>
+    
+    <input type="hidden" id="horario_evento" name="horario_evento" data-salvo="<?= $is_edit ? substr($evento_edit['horario_evento'], 0, 5) : '' ?>" value="<?= $is_edit ? substr($evento_edit['horario_evento'], 0, 5) : '' ?>" required>
+</div>
                 </div>
 
                 <h3 class="section-title"><span class="num">3</span> Descrição do Evento</h3>
                 <div class="form-group">
                     <label for="descricao">Conte mais detalhes sobre o evento: *</label>
-                    <textarea id="descricao" name="descricao" class="form-control" maxlength="500" required><?= $is_edit ? htmlspecialchars($evento_edit['descricao']) : '' ?></textarea>
+                    <textarea id="descricao" name="descricao" class="form-control" maxlength="500" required><?= htmlspecialchars($evento_edit['descricao'] ?? '') ?></textarea>
                 </div>
 
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="mc_host">Mestre de Cerimônia (Host):</label>
-                        <input type="text" id="mc_host" name="mc_host" value="<?= $is_edit ? htmlspecialchars($evento_edit['mc_host'] ?? '') : '' ?>">
+                        <input type="text" id="mc_host" name="mc_host" value="<?= htmlspecialchars($evento_edit['mc_host'] ?? '') ?>">
                     </div>
                     <div class="flex-1">
                         <label for="dj">DJ (Residente ou Convidado):</label>
-                        <input type="text" id="dj" name="dj" value="<?= $is_edit ? htmlspecialchars($evento_edit['dj'] ?? '') : '' ?>">
+                        <input type="text" id="dj" name="dj" value="<?= htmlspecialchars($evento_edit['dj'] ?? '') ?>">
                     </div>
                 </div>
 
@@ -212,20 +226,25 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
         </button>
     <?php endif; ?>
 </div>
-</form> <?php if ($is_edit): ?>
+</form> 
+<?php if ($is_edit): ?>
 <form id="form-delete" action="../controllers/deletar-evento.php" method="POST" style="display: none;">
     <input type="hidden" name="id_evento" id="delete_id_evento" value="">
 </form>
 
-<script>
-function confirmarExclusao(idEvento) {
-    // Validação brutal: exige confirmação antes de destruir os dados
-    if (confirm("Ação irreversível. Tem certeza que deseja apagar este evento?\nIsso removerá todas as presenças, favoritos e comentários associados.")) {
-        document.getElementById('delete_id_evento').value = idEvento;
-        document.getElementById('form-delete').submit();
-    }
-}
-</script>
+<div id="modalExclusao" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+        </div>
+        <h3>Excluir Evento?</h3>
+        <p>Esta ação é irreversível. Todas as presenças, favoritos e dados atrelados a este evento serão apagados para sempre.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal-cancel" onclick="fecharModal()">Cancelar</button>
+            <button type="button" class="btn-modal-delete" onclick="executarExclusao(<?= $evento_edit['id_evento'] ?>)">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
 <?php endif; ?>
     </main>
 
