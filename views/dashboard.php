@@ -43,9 +43,9 @@ if ($logado) {
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
           Meus eventos
         </a>
-        <a href="#" class="nav-item">
+        <a href="../controllers/eventos-confirmados.php" class="nav-item">
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2 7.74c-1.75-.8-3-2.58-3-4.74s1.25-3.94 3-4.74V6H4v2.26c1.75.8 3 2.58 3 4.74s-1.25 3.94-3 4.74V18h16v-.26z" fill="currentColor"/></svg>
-          Meus ingressos
+          Eventos confirmados
         </a>
 
         <div class="user-menu-container">
@@ -65,7 +65,7 @@ if ($logado) {
 
             <ul class="dropdown-list">
               <li><a href="../views/usuario.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg> Minha conta</a></li>
-              <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
+              <li><a href="../controllers/favoritos-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
               <li><a href="../controllers/evento-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento</a></li>
               <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
               <li class="divider"></li>
@@ -113,15 +113,10 @@ if ($logado) {
   <button type="submit" style="display: none;">Buscar</button>
 </form>
 
-<section class="hero-top">
-  <div class="hero-text">
-    <?php if ($logado): ?>
-        <h1>Bem-vindo, <?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></h1>
-    <?php else: ?>
-        <h1>Conectando a cultura Hip Hop</h1>
-    <?php endif; ?>
-    <p>Todos os eventos da cultura Hip Hop em um só lugar</p>
-  </div>
+
+<section class="carousel-header">
+  <h2>Eventos em Destaque</h2>
+  <p>As melhores vivências da cultura selecionadas para você</p>
 </section>
 
 <section class="sympla-carousel">
@@ -129,14 +124,38 @@ if ($logado) {
     <?php if(!empty($eventosCarrossel)): ?>
         <?php foreach($eventosCarrossel as $index => $ev): 
             $imgFallback = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
+            $idEvento = $ev['id_evento'] ?? $ev['id'] ?? '#';
+            $tipoEvento = $ev['nome_tipo'] ?? 'Cultura Urbana';
+            $dataEvento = isset($ev['data_evento']) ? date('d/m/Y', strtotime($ev['data_evento'])) : 'Em breve';
+            $cidadeEvento = $ev['cidade'] ?? 'Vários locais';
         ?>
         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-          <img src="<?= htmlspecialchars($imgFallback) ?>" alt="<?= htmlspecialchars($ev['nome_evento']) ?>">
-          <div class="carousel-caption"><?= htmlspecialchars($ev['nome_evento']) ?></div>
+          <a href="../controllers/detalhe-evento.php?id=<?= $idEvento ?>" class="carousel-link">
+            <div class="image-wrapper">
+              <img src="<?= htmlspecialchars($imgFallback) ?>" alt="<?= htmlspecialchars($ev['nome_evento']) ?>">
+              <div class="overlay"></div>
+            </div>
+            
+            <span class="badge-tipo"><?= htmlspecialchars($tipoEvento) ?></span>
+            
+            <div class="carousel-caption">
+              <h3><?= htmlspecialchars($ev['nome_evento']) ?></h3>
+              <div class="carousel-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
+                  <?= htmlspecialchars($dataEvento) ?>
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
+                  <?= htmlspecialchars($cidadeEvento) ?>
+                </span>
+              </div>
+            </div>
+          </a>
         </div>
         <?php endforeach; ?>
     <?php else: ?>
-        <p style="text-align:center; color:#888;">Nenhum evento em destaque.</p>
+        <p style="text-align:center; color:#888;">Nenhum evento em destaque no momento.</p>
     <?php endif; ?>
   </div>
   

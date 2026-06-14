@@ -16,13 +16,20 @@
     </a>
     
     <nav class="nav-links nav-desktop">
-        <a href="../controllers/evento-process.php" class="nav-item">Criar evento</a>
-        <a href="../controllers/eventos-confirmados.php" class="nav-item roxo">Meus eventos</a>
+        <a href="../controllers/evento-process.php" class="nav-item">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg>
+          Criar evento
+        </a>
+        <a href="#" class="nav-item">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
+          Meus eventos
+        </a>
 
         <div class="user-menu-container">
-            <button class="user-profile-btn" id="userMenuBtn">
-                <div class="user-initials"><?= htmlspecialchars($initials); ?></div>
-            </button>
+          <button class="user-profile-btn" id="userMenuBtn">
+            <svg class="hamburger-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor"/></svg>
+            <div class="user-initials"><?= $initials; ?></div>
+          </button>
             <div class="user-dropdown" id="userDropdown">
                 <div class="dropdown-header">
                     <div class="user-info">
@@ -31,7 +38,7 @@
                 </div>
         <ul class="dropdown-list">
           <li><a href="../views/usuario.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg> Minha conta</a></li>
-          <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
+          <li><a href="../controllers/favoritos-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
           <li><a href="../controllers/evento-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento</a></li>
           <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
           <li class="divider"></li>
@@ -84,7 +91,11 @@
             <h2 class="section-divider">Próximos Eventos</h2>
             <div class="events-grid">
                 <?php foreach ($eventos_futuros as $ev): ?>
-                    <?php require __DIR__ . '/components/card-evento.php'; // Inclusão isolada do card ?>
+                    <?php 
+                        // Correção: Executa a atribuição estritamente dentro da tag PHP
+                        $imagem = $ev['imagem_render']; 
+                        require __DIR__ . '/components/card-evento.php'; 
+                    ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -93,7 +104,11 @@
             <h2 class="section-divider passados-titulo">Eventos Encerrados</h2>
             <div class="events-grid passados-grid">
                 <?php foreach ($eventos_passados as $ev): ?>
-                    <?php require __DIR__ . '/components/card-evento.php'; ?>
+                    <?php 
+                        // Correção: Garante que a imagem também é injetada nos eventos antigos
+                        $imagem = $ev['imagem_render']; 
+                        require __DIR__ . '/components/card-evento.php'; 
+                    ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
