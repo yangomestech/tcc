@@ -105,6 +105,7 @@ $words = explode(" ", trim($username));
 
 // Correção do Bug de Iniciais: substr(texto, INICIO, QUANTIDADE)
 $initials = count($words) >= 2 ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1)) : strtoupper(substr($words[0], 0, 2));
+
 // Busca os dados do Evento (Sem alterações, query original mantida)
 $sql = "
     SELECT 
@@ -168,18 +169,36 @@ try {
 $data_formatada = date('d/m/Y', strtotime($evento['data_evento']));
 $horario_formatado = substr($evento['horario_evento'], 0, 5);
 
-// CORREÇÃO: Adicionado "../" para sair da pasta atual e acessar a raiz de uploads corretamente
-if (!empty($evento['imagem_evento'])) {
-    $imagem_url = "../" . ltrim($evento['imagem_evento'], './');
-} else {
-    switch($evento['id_tipo']) {
-        case 1: $imagem_url = "../assets/img/computador1.jpg"; break;
-        case 2: $imagem_url = "../assets/img/computador2.jpg"; break;
-        case 3: $imagem_url = "../assets/img/computador3.jpg"; break;
-        case 4: $imagem_url = "../assets/img/computador4.jpg"; break;
-        default: $imagem_url = "../assets/img/computador1.jpg"; break;
+// =================================================================================
+// CORREÇÃO: Função de Validação Física de Imagem (Padronizada com o Dashboard)
+// =================================================================================
+if (!function_exists('getImagemFallback')) {
+    function getImagemFallback($caminho, $id_tipo) {
+        if (!empty($caminho)) {
+            // Limpa barras dúbias para montar o path exato
+            $caminho_limpo = ltrim($caminho, './');
+            // Valida fisicamente a existência do arquivo no disco
+            $caminho_absoluto = __DIR__ . '/../' . $caminho_limpo;
+            
+            if (file_exists($caminho_absoluto)) {
+                return "../" . $caminho_limpo; 
+            }
+        }
+        
+        // Se a foto física não existe, aplica o fallback temático e à prova de falhas
+        switch((int)$id_tipo) {
+            case 1: return "../assets/img/computador1.jpg"; 
+            case 2: return "../assets/img/computador2.jpg"; 
+            case 3: return "../assets/img/computador3.jpg"; 
+            case 4: return "../assets/img/computador4.jpg"; 
+            default: return "../assets/img/computador1.jpg";
+        }
     }
 }
+
+// Invoca a função corrigida
+$imagem_url = getImagemFallback($evento['imagem_evento'] ?? '', $evento['id_tipo']);
+// =================================================================================
 
 $endereco = sprintf(
     "%s, %s %s - %s, %s - %s. CEP: %s",
