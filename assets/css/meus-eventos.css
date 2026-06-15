@@ -1,0 +1,396 @@
+/* ==========================================================================
+   VARIÁVEIS DE CORES E TEMA (Identidade BeatStreet)
+   ========================================================================== */
+:root {
+    --bg-color: #0a0a0a;       /* Fundo preto principal */
+    --card-bg: #1a1a1a;        /* Fundo dos cards escuros */
+    --primary-color: #ff6a00;  /* Laranja principal */
+    --text-light: #ffffff;     /* Texto branco */
+    --text-muted: #a0a0a0;     /* Texto cinza para detalhes */
+    --danger-color: #e53935;   /* Vermelho para botão de excluir */
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   RESETS E ESTILOS GERAIS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+/* ==========================================================================
+   CONTAINER PRINCIPAL
+   ========================================================================== */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 2rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   CARDS DE EVENTOS (Listagem em coluna)
+   ========================================================================== */
+.eventos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.evento-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    display: flex;
+    padding: 15px;
+    gap: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.evento-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 106, 0, 0.3);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
+
+.evento-img {
+    width: 180px;
+    height: 120px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.evento-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.evento-info h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.evento-details {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.evento-details strong {
+    color: #ccc;
+}
+
+/* ==========================================================================
+   BOTÕES DE AÇÃO
+   ========================================================================== */
+.evento-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-detalhes {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.btn-detalhes:hover {
+    background-color: #e65c00;
+    transform: scale(1.03);
+}
+
+.btn-editar {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-editar:hover {
+    background-color: rgba(255, 106, 0, 0.1);
+    transform: scale(1.03);
+}
+
+.btn-excluir {
+    background-color: var(--danger-color);
+    color: var(--text-light);
+}
+
+.btn-excluir:hover {
+    background-color: #c62828;
+    transform: scale(1.03);
+}
+
+/* ==========================================================================
+   ESTADO VAZIO (Nenhum evento encontrado)
+   ========================================================================== */
+.empty-state {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 50px 20px;
+    text-align: center;
+    border: 1px dashed #444;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+}
+
+.empty-state .btn-criar {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 12px 24px;
+    font-size: 1rem;
+}
+
+.empty-state .btn-criar:hover {
+    background-color: #e65c00;
+    transform: scale(1.05);
+}
+
+
+
+  .header-sympla {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #000;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+    .header-sympla .logo .roxo {
+    color: rgba(198, 12, 198, 0.92) !important;
+    }
+
+
+  .header-sympla .logo .laranja {
+    color: #f97316 !important;
+  }
+
+    .header-sympla .logo a,
+  .header-sympla .logo a:link,
+  .header-sympla .logo a:visited,
+  .header-sympla .logo a:hover,
+  .header-sympla .logo a:active {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    display: inline;
+  }
+
+    .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    white-space: nowrap;
+  }
+
+    .nav-links a {
+    text-decoration: none;
+    color: #ccc;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+
+  .nav-links a:hover {
+    color: orange;
+  }
+
+    .nav-links .logout-btn {
+    color: #ff8a8a;
+  }
+
+    .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+  }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+  }
+
+    .user-menu-container {
+      position: relative;
+  }
+  .user-profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid #444;
+      border-radius: 20px;
+      padding: 4px 6px 4px 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.3s ease;
+  }
+
+  .nav-item:hover {
+      color: #fff;
+  }
+
+    .user-profile-btn * {
+      pointer-events: none;
+  }
+
+
+  .user-profile-btn:hover {
+      background: #222;
+      border-color: #666;
+  }
+
+    .user-initials {
+      background-color: #333;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid #555;
+  }
+
+    /* --- Dropdown Dark --- */
+  .user-dropdown {
+      position: absolute;
+      top: calc(100% + 15px);
+      right: 0;
+      background-color: #111;
+      width: 260px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      display: none; 
+      z-index: 9999; 
+      overflow: hidden;
+      color: #eee;
+  }
+
+  .dropdown-header {
+      display: flex;
+      align-items: center;
+      padding: 20px 15px;
+      gap: 15px;
+      border-bottom: 1px solid #222;
+  }
+
+   .dropdown-header {
+      display: flex;
+      align-items: center;
+      padding: 20px 15px;
+      gap: 15px;
+      border-bottom: 1px solid #222;
+  }
+
+
+  .dropdown-list .divider {
+      height: 1px;
+      background-color: #222;
+      margin: 8px 0;
+  }
+
+
+  .user-dropdown.active {
+      display: block;
+  }
+/* ==========================================================================
+   RESPONSIVIDADE (Telas menores que 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .evento-card {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .evento-img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .evento-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+}
