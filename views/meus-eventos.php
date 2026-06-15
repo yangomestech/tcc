@@ -15,7 +15,7 @@ require_once __DIR__ . '/../config/.conexao.php';
 $id_usuario_logado = $_SESSION['id_usuario'] ?? 1; 
 
 /* ==========================================================================
-   BUSCA DADOS DO USUÁRIO PARA O HEADER (Evita erros de variáveis indefinidas)
+   BUSCA DADOS DO USUÁRIO PARA O HEADER
    ========================================================================== */
 $username = 'Usuário';
 $initials = 'BS';
@@ -28,10 +28,34 @@ try {
     
     if ($usuarioData) {
         $username = $usuarioData['username'];
-        $initials = strtoupper(substr($username, 0, 2)); // Pega as 2 primeiras letras do nome
+        $initials = strtoupper(substr($username, 0, 2));
     }
 } catch (PDOException $e) {
     // Mantém os fallbacks caso dê erro
+}
+
+/* ==========================================================================
+   FUNÇÃO PADRÃO DE FALLBACK DE IMAGEM (Unificada com o resto do sistema)
+   ========================================================================== */
+if (!function_exists('getImagemFallback')) {
+    function getImagemFallback($caminho, $id_tipo) {
+        if (!empty($caminho)) {
+            $caminho_limpo = ltrim($caminho, './');
+            $caminho_absoluto = __DIR__ . '/../' . $caminho_limpo;
+            
+            if (file_exists($caminho_absoluto)) {
+                return "../" . $caminho_limpo; 
+            }
+        }
+        
+        switch((int)$id_tipo) {
+            case 1: return "../assets/img/computador1.jpg"; 
+            case 2: return "../assets/img/computador2.jpg"; 
+            case 3: return "../assets/img/computador3.jpg"; 
+            case 4: return "../assets/img/computador4.jpg"; 
+            default: return "../assets/img/computador1.jpg";
+        }
+    }
 }
 
 /* ==========================================================================
@@ -80,7 +104,7 @@ try {
         <div class="user-menu-container">
           <button class="user-profile-btn" id="userMenuBtn">
             <svg class="hamburger-icon" viewBox="0 0 24 24" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor"/></svg>
-            <div class="user-initials"><?= $initials; ?></div>
+            <div class="user-initials"><?= htmlspecialchars($initials); ?></div>
           </button>
             <div class="user-dropdown" id="userDropdown">
                 <div class="dropdown-header">
@@ -119,29 +143,11 @@ try {
         <?php else: ?>
             <div class="eventos-list">
                 <?php foreach ($eventos as $evento): 
-                    // Tratamento dinâmico da data (De: YYYY-MM-DD para DD/MM/YYYY)
                     $dataFormatada = date('d/m/Y', strtotime($evento['data_evento']));
-                    
-                    // Tratamento dinâmico da hora (De: HH:MM:SS para HH:MM)
                     $horaFormatada = date('H:i', strtotime($evento['horario_evento']));
                     
-                    /* ==========================================================================
-                       LOGICA DE TRATAMENTO DA IMAGEM DO EVENTO (Correção do Bug)
-                       ========================================================================== */
-                    $imagemCapa = $evento['imagem_evento'];
-
-                    if (empty($imagemCapa)) {
-                        // Cenário A: Se estiver nulo no banco, usa o padrão do sistema
-                        $imagemCapa = 'https://via.placeholder.com/300x200/333333/ff6600?text=BeatStreet';
-                    } elseif (strpos($imagemCapa, 'http://') === 0 || strpos($imagemCapa, 'https://') === 0) {
-                        // Cenário B: Se for link externo (como o evento 23), mantém intacto
-                    } else {
-                        // Cenário C: Se for caminho local do servidor (uploads/...)
-                        // Se NÃO começar com '../', nós adicionamos para que ele saia da pasta 'views/' corretamente
-                        if (strpos($imagemCapa, '../') !== 0) {
-                            $imagemCapa = '../' . ltrim($imagemCapa, '/');
-                        }
-                    }
+                    // Invoca a função unificada de verificação de imagem
+                    $imagemCapa = getImagemFallback($evento['imagem_evento'] ?? '', $evento['id_tipo']);
                 ?>
                     <div class="evento-card">
                         
@@ -160,7 +166,7 @@ try {
                             <div class="evento-actions">
                                 <a href="../controllers/detalhe-evento.php?id=<?= $evento['id_evento'] ?>" class="btn btn-detalhes">Ver Detalhes</a>
                                 <a href="../controllers/editar-evento.php?id=<?= $evento['id_evento'] ?>" class="btn btn-editar">Editar</a>
-                                <a href="../controllers/excluir-evento.php?id=<?= $evento['id_evento'] ?>" class="btn btn-excluir" onclick="return confirm('Tem certeza que deseja excluir o evento \'<?= htmlspecialchars($evento['nome_evento']) ?>\'?')">Excluir</a>
+                                <a href="../controllers/excluir-evento.php?id=<?= $evento['id_evento'] ?>" class="btn btn-excluir" onclick="return confirm('Tem certeza que deseja excluir o evento \'<?= htmlspecialchars(addslashes($evento['nome_evento'])) ?>\'?')">Excluir</a>
                             </div>
                         </div>
 
@@ -171,5 +177,6 @@ try {
 
     </main>
 
+    <script src="../assets/js/menu.js"></script>
 </body>
 </html>
