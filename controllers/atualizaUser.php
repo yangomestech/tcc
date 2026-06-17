@@ -31,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $complemento   = trim($_POST['complemento'] ?? null);
     $bairro        = trim($_POST['bairro'] ?? null);
     $cidade        = trim($_POST['cidade'] ?? null);
-    $estado        = trim($_POST['estado'] ?? null);
-    $descricao     = trim($_POST['bio'] ?? null);         
+    $estado        = trim($_POST['estado'] ?? null);       
 
     // Trata strings vazias como NULL para respeitar a estrutura das chaves UNIQUE do seu banco
     $cpf         = $cpf === '' ? null : $cpf;
@@ -45,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bairro      = $bairro === '' ? null : $bairro;
     $cidade      = $cidade === '' ? null : $cidade;
     $estado      = $estado === '' ? null : $estado;
-    $descricao   = $descricao === '' ? null : $descricao;
 
     // Validação de campos obrigatórios do banco
     if (empty($username) || empty($nome_usuario) || empty($email_usuario)) {
