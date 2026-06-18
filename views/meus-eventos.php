@@ -3,7 +3,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+$logado = isset($_SESSION['id_usuario']);
+$username = $logado ? ($_SESSION['username'] ?? 'Usuário') : 'Visitante';
+$email = $logado ? ($_SESSION['email_usuario'] ?? 'usuario@beatstreet.com') : '';
 /* ==========================================================================
    CONEXÃO COM O BANCO DE DADOS
    ========================================================================== */
@@ -108,8 +110,10 @@ try {
           </button>
             <div class="user-dropdown" id="userDropdown">
                 <div class="dropdown-header">
+                    <div class="user-initials-large"><?= $initials; ?></div>
                     <div class="user-info">
-                        <strong><?= htmlspecialchars(strtoupper($username), ENT_QUOTES, 'UTF-8'); ?></strong>
+                         <strong><?= htmlspecialchars(strtoupper($username), ENT_QUOTES, 'UTF-8'); ?></strong>
+                          <span><?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?></span>
                     </div>
                 </div>
         <ul class="dropdown-list">
@@ -159,7 +163,7 @@ try {
                                 <div class="evento-details">
                                     <span><strong>Data e Hora:</strong> <?= $dataFormatada ?> às <?= $horaFormatada ?></span>
                                     <span><strong>Local:</strong> <?= htmlspecialchars($evento['cidade']) ?> - <?= htmlspecialchars($evento['estado']) ?></span>
-                                    <span><strong>Categoria:</strong> <?= htmlspecialchars($evento['categoria']) ?></span>
+                                    <span><strong>Categoria:</strong> <?=   htmlspecialchars($evento['categoria']) ?></span>
                                 </div>
                             </div>
                             
