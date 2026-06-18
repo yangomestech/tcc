@@ -2,11 +2,11 @@
    VARIÁVEIS DE CORES E TEMA (Identidade BeatStreet)
    ========================================================================== */
 :root {
-    --bg-color: #000;       /* Fundo preto principal */
-    --card-bg: #000;        /* Fundo dos cards escuros */
-    --primary-color: #f97316;  /* Laranja principal */
+    --bg-color: #0a0a0a;       /* Fundo preto principal */
+    --card-bg: #1a1a1a;        /* Fundo dos cards escuros */
+    --primary-color: #ff6a00;  /* Laranja principal */
     --text-light: #ffffff;     /* Texto branco */
-    --text-muted: #fff;     /* Texto cinza para detalhes */
+    --text-muted: #a0a0a0;     /* Texto cinza para detalhes */
     --danger-color: #e53935;   /* Vermelho para botão de excluir */
     --border-radius: 8px;
     --transition: all 0.3s ease;
@@ -34,14 +34,16 @@ a {
 }
 
 /* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+/* ==========================================================================
    CONTAINER PRINCIPAL
    ========================================================================== */
 .container {
     max-width: 900px;
     margin: 40px auto;
     padding: 0 20px;
-    background-color: #1a1a1a;
-    border-radius: 10px;
 }
 
 .page-header {
@@ -238,16 +240,6 @@ a {
     display: inline;
   }
 
-
-  .header-sympla .logo {
-    font-size: 30px;
-    font-weight: 700;
-    white-space: nowrap;
-    text-decoration: none; /* Tira o sublinhado do link */
-    color: #fff; /* Garante que o texto seja branco */
-  }
-
-
     .nav-links {
     display: flex;
     align-items: center;
@@ -318,21 +310,6 @@ a {
       border-color: #666;
   }
 
-
-  .user-initials-large {
-      background-color: #222;
-      color: #fff;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 1.2rem;
-      border: 1px solid #444;
-  }
-
     .user-initials {
       background-color: #333;
       color: #fff;
@@ -384,13 +361,6 @@ a {
       height: 1px;
       background-color: #222;
       margin: 8px 0;
-  }
-
-    /* --- Lista de Ações (Dark) --- */
-  .dropdown-list {
-      list-style: none;
-      padding: 10px 0;
-      margin: 0;
   }
 
 
