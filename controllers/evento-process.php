@@ -10,7 +10,7 @@ if (!isset($_SESSION['id_usuario'])) {
 // =========================================================================
 // 2. NOVA REGRA: BLOQUEIO PARA QUEM NÃO TEM RG E CPF
 // =========================================================================
-if (empty($_SESSION['documentos_completos'])) {
+if (empty($_SESSION['documentos_completos'])) { 
     // Salva uma mensagem de erro para exibir na tela do perfil
     $_SESSION['erro_documentos'] = "Acesso negado: Para criar um evento, é obrigatório preencher seu RG e CPF no perfil por motivos de segurança.";
     
@@ -18,6 +18,7 @@ if (empty($_SESSION['documentos_completos'])) {
     header("Location: ../views/usuario.php"); 
     exit();
 }
+
 // =========================================================================
 
 require_once '../config/.conexao.php'; 

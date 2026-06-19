@@ -180,11 +180,11 @@ $titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="cep">CEP: *</label>
-                        <input type="text" id="cep" name="cep" maxlength="9" value="<?= $is_edit ? htmlspecialchars($evento_edit['cep'] ?? '') : '' ?>" required>
+                        <input type="text" id="cep" name="cep" maxlength="9" oninput="this.value = this.value.replace(/\D/g, '')" value="<?= $is_edit ? htmlspecialchars($evento_edit['cep'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-1">
                         <label for="estado">Estado (UF): *</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" value="<?= $is_edit ? htmlspecialchars($evento_edit['estado'] ?? '') : '' ?>" required>
+                        <input type="text" id="estado" name="estado" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" maxlength="2" value="<?= $is_edit ? htmlspecialchars($evento_edit['estado'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-2">
                         <label for="cidade">Cidade: *</label>

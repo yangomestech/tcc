@@ -169,7 +169,7 @@ unset($_SESSION['mensagem']);
 
         <div class="flex-1">
           <label for="cep">CEP:</label>
-          <input type="text" id="cep" name="cep" maxlength="8" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000" value="<?= htmlspecialchars($cep, ENT_QUOTES, 'UTF-8'); ?>">
+          <input type="text" id="cep" name="cep" maxlength="9" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000" value="<?= htmlspecialchars($cep, ENT_QUOTES, 'UTF-8'); ?>">
         </div>
       </div>
 
