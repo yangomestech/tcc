@@ -10,7 +10,6 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 // 2. Incluir o seu arquivo de conexão com o banco de dados
-// OBS: Ajuste o caminho abaixo se sua conexão estiver em outra pasta
 require_once '../config/.conexao.php'; 
 
 $id_usuario = $_SESSION['id_usuario'];
@@ -32,8 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bairro        = trim($_POST['bairro'] ?? null);
     $cidade        = trim($_POST['cidade'] ?? null);
     $estado        = trim($_POST['estado'] ?? null);       
-
-    // Depois de salvar o RG e CPF no banco de dados com sucesso...
 
     // Trata strings vazias como NULL para respeitar a estrutura das chaves UNIQUE do seu banco
     $cpf         = $cpf === '' ? null : $cpf;
