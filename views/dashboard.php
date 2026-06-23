@@ -84,10 +84,11 @@ if ($logado) {
   </nav>
 </header>
 
-<form class="search-sympla" action="busca.php" method="GET">
+<form class="search-sympla" action="../views/busca.php" method="GET">
   <div class="search-box">
     <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 2a8 8 0 016.32 12.9l4.387 4.387a1 1 0 01-1.414 1.415l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"/></svg>
-    <input type="text" name="evento" placeholder="Buscar eventos, artistas...">
+    <input type="text" id="inputBusca" name="evento" placeholder="Buscar eventos, artistas..." autocomplete="off">
+    <div id="containerSugestoes" class="search-suggestions"></div>
   </div>
 
   <div class="location-box">
@@ -167,8 +168,6 @@ if ($logado) {
 </section>
 
 <?php
-    // IMPORTANTE: Adicionado a variável $logado como terceiro parâmetro 
-    // para alinhar com o Controlador que reescrevemos juntos.
     renderRowEventos("Hoje no BeatStreet", $eventosHoje ?? [], $logado);
     renderRowEventos("Próximos na sua Região", $eventosProximos ?? [], $logado);
     renderRowEventos("Batalhas de Rima", $eventosRima ?? [], $logado);
