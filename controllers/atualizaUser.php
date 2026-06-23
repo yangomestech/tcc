@@ -32,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cidade        = trim($_POST['cidade'] ?? null);
     $estado        = trim($_POST['estado'] ?? null);       
 
+    // Depois de salvar o RG e CPF no banco de dados com sucesso...
+
     // Trata strings vazias como NULL para respeitar a estrutura das chaves UNIQUE do seu banco
     $cpf         = $cpf === '' ? null : $cpf;
     $rg          = $rg === '' ? null : $rg;
