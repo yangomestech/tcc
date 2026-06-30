@@ -10,7 +10,6 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 // 2. Incluir o seu arquivo de conexão com o banco de dados
-// OBS: Ajuste o caminho abaixo se sua conexão estiver em outra pasta
 require_once '../config/.conexao.php'; 
 
 $id_usuario = $_SESSION['id_usuario'];
@@ -32,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bairro        = trim($_POST['bairro'] ?? null);
     $cidade        = trim($_POST['cidade'] ?? null);
     $estado        = trim($_POST['estado'] ?? null);       
+
+    // Depois de salvar o RG e CPF no banco de dados com sucesso...
 
     // Trata strings vazias como NULL para respeitar a estrutura das chaves UNIQUE do seu banco
     $cpf         = $cpf === '' ? null : $cpf;
@@ -67,8 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     complemento = :complemento, 
                     bairro = :bairro, 
                     cidade = :cidade, 
-                    estado = :estado, 
-                    descricao = :descricao
+                    estado = :estado
                 WHERE id_usuario = :id_usuario";
 
         $stmt = $conn->prepare($sql);
@@ -87,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':bairro', $bairro);
         $stmt->bindParam(':cidade', $cidade);
         $stmt->bindParam(':estado', $estado);
-        $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
 
         // 6. Executa a gravação
@@ -95,6 +94,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Atualiza os dados locais de sessão ativos
             $_SESSION['username'] = $username;
             $_SESSION['email_usuario'] = $email_usuario;
+
+            // =================================================================
+            // 🔥 CORREÇÃO DO MEGA BRAIN: ATUALIZAÇÃO EM TEMPO REAL DA PERMISSÃO
+            // =================================================================
+            // Se os campos NÃO forem nulos e NÃO forem strings vazias após o trim
+            if (!empty($cpf) && !empty($rg)) {
+                $_SESSION['documentos_completos'] = true;
+            } else {
+                $_SESSION['documentos_completos'] = false;
+            }
+            // =================================================================
 
             $_SESSION['mensagem'] = "<div class='alert alert-success' style='color: #4ade80; margin-bottom: 20px;'>Dados atualizados com sucesso!</div>";
         } else {
@@ -110,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    
     header("Location:../views/usuario.php");
     exit();
 } else {
