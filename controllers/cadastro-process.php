@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $username  = trim($_POST['username'] ?? '');
-$nome      = trim($_POST['nome_usuario'] ?? '');
+$nome      = trim($_POST['nome_usuario'] ?? ''); 
 $email     = trim($_POST['email_usuario'] ?? '');
 $senha     = $_POST['senha_usuario'] ?? '';
 $confirmar = $_POST['confirmar_senha'] ?? '';
