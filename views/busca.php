@@ -236,8 +236,8 @@ try {
     <?php endif; ?>
 </main>
 
-<footer>
-  <p style="text-align: center; color: #666; padding: 20px;">© 2026 BeatStreet</p>
+<footer class="site-footer">
+  <p>© 2026 BeatStreet</p>
 </footer>
 
 <script src="../assets/js/menu.js"></script>
