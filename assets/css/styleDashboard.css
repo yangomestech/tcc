@@ -1041,3 +1041,44 @@
         font-size: 1.1rem; 
     }
 }
+
+/* =========================================
+   CORREÇÃO DO FOOTER NA PÁGINA DE BUSCA
+   Mantém o footer no fim da tela quando há pouco conteúdo
+========================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.yt-results-container {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+    width: 100%;
+    background: #111;
+    border-top: 1px solid #1f1f1f;
+}
+
+.site-footer {
+    margin-top: auto;
+    width: 100%;
+    background: #111;
+    border-top: 1px solid #1f1f1f;
+    padding: 22px 20px;
+}
+
+.site-footer p {
+    text-align: center;
+    color: #666;
+    margin: 0;
+}
