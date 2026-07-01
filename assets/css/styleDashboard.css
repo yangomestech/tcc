@@ -1082,3 +1082,194 @@ footer {
     color: #666;
     margin: 0;
 }
+
+/* =========================================
+   PÁGINA DE BUSCA - LAYOUT MAIS CHEIO
+========================================= */
+
+.busca-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+/* Barra de busca mais bem posicionada */
+.busca-page .search-sympla {
+  width: min(1180px, calc(100% - 48px));
+  margin: 24px auto 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) 280px;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Container dos resultados ocupando melhor a tela */
+.busca-page .yt-results-container {
+  flex: 1;
+  width: min(1180px, calc(100% - 48px));
+  margin: 42px auto 70px;
+  padding: 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px 24px;
+  align-items: start;
+}
+
+/* Título ocupa a linha inteira */
+.busca-page .search-title {
+  grid-column: 1 / -1;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  padding-bottom: 18px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #242424;
+}
+
+/* Card de resultado mais encorpado */
+.busca-page .yt-card {
+  width: 100%;
+  min-height: 190px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: center;
+
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0d0d0d, #151515);
+  border: 1px solid #202020;
+
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.25s ease;
+}
+
+.busca-page .yt-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
+}
+
+/* Imagem */
+.busca-page .yt-thumbnail {
+  width: 100%;
+  height: 160px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #111;
+  position: relative;
+}
+
+.busca-page .yt-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Informações */
+.busca-page .yt-info {
+  min-width: 0;
+}
+
+.busca-page .yt-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.busca-page .yt-meta {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.busca-page .yt-organizer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #aaa;
+}
+
+.busca-page .yt-organizer-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c60cc6, #f97316);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Quando não tiver resultado, centraliza bonito */
+.busca-page .no-results {
+  grid-column: 1 / -1;
+  min-height: 420px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  color: #aaa;
+}
+
+/* Footer sempre no final */
+.busca-page .site-footer {
+  margin-top: auto;
+  width: 100%;
+  background: #111;
+  border-top: 1px solid #1f1f1f;
+  padding: 22px 20px;
+}
+
+.busca-page .site-footer p {
+  margin: 0;
+  text-align: center;
+  color: #666;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 1100px) {
+  .busca-page .yt-results-container {
+    grid-template-columns: 1fr;
+    width: min(900px, calc(100% - 40px));
+  }
+
+  .busca-page .yt-card {
+    grid-template-columns: 300px 1fr;
+  }
+
+  .busca-page .search-sympla {
+    width: min(900px, calc(100% - 40px));
+  }
+}
+
+@media (max-width: 720px) {
+  .busca-page .search-sympla {
+    grid-template-columns: 1fr;
+    width: calc(100% - 32px);
+  }
+
+  .busca-page .yt-results-container {
+    width: calc(100% - 32px);
+    margin-top: 32px;
+  }
+
+  .busca-page .yt-card {
+    grid-template-columns: 1fr;
+  }
+
+  .busca-page .yt-thumbnail {
+    height: 210px;
+  }
+}
