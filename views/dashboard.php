@@ -36,11 +36,11 @@ if ($logado) {
     
     <?php if ($logado): ?>
 <?php if (!empty($_SESSION['documentos_completos'])): ?>
-                      <a href="../controllers/evento-process.php">
+                      <a href="../controllers/evento-process.php" class="nav-item">
                           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento
                       </a>
                   <?php else: ?>
-                      <a href="#" onclick="abrirModalDocumentos(event)">
+                      <a href="#" class="nav-item" onclick="abrirModalDocumentos(event)">
                           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento
                       </a>
                   <?php endif; ?>
