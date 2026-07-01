@@ -1,5 +1,4 @@
 <?php
-// Inicia a sessão para capturar o usuário logado
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,11 +14,27 @@ require_once __DIR__ . '/../config/.conexao.php';
 $id_usuario_logado = $_SESSION['id_usuario'] ?? 1;
 
 /* ==========================================================================
-   BUSCA DADOS DO USUÁRIO PARA O HEADER
+   DADOS DO USUÁRIO PARA O HEADER
    ========================================================================== */
 $username = $_SESSION['username'] ?? 'Usuário';
 $email = $_SESSION['email_usuario'] ?? 'usuario@beatstreet.com';
 $initials = 'BS';
+
+function gerarIniciaisUsuario($nome) {
+    $nome = trim((string) $nome);
+
+    if ($nome === '') {
+        return 'BS';
+    }
+
+    $partes = preg_split('/\s+/', $nome);
+
+    if (count($partes) >= 2) {
+        return strtoupper(substr($partes[0], 0, 1) . substr($partes[1], 0, 1));
+    }
+
+    return strtoupper(substr($partes[0], 0, 2));
+}
 
 try {
     $sqlUser = "SELECT username, nome_usuario
@@ -34,13 +49,7 @@ try {
         $username = $usuarioData['username'] ?? $usuarioData['nome_usuario'] ?? $username;
     }
 
-    $words = explode(" ", trim($username));
-
-    if (count($words) >= 2) {
-        $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-    } else {
-        $initials = strtoupper(substr($username, 0, 2));
-    }
+    $initials = gerarIniciaisUsuario($username);
 
 } catch (PDOException $e) {
     // Mantém os fallbacks caso dê erro
@@ -76,22 +85,80 @@ if (!function_exists('getImagemFallback')) {
 }
 
 /* ==========================================================================
-   BUSCA DOS EVENTOS NO BANCO DE DADOS
+   BUSCA DOS EVENTOS + TOTAL DE PRESENÇAS
    ========================================================================== */
+$eventos = [];
+$presencasPorEvento = [];
+
 try {
-    $sql = "SELECT e.*, t.nome_tipo AS categoria
-            FROM evento e
-            INNER JOIN tipo_evento t ON e.id_tipo = t.id_tipo
-            WHERE e.id_usuario = :id_usuario
-            ORDER BY e.data_evento DESC, e.horario_evento DESC";
+    $sql = "
+        SELECT 
+            e.*,
+            t.nome_tipo AS categoria,
+            COALESCE(pc.total_presencas, 0) AS total_presencas
+        FROM evento e
+        INNER JOIN tipo_evento t ON e.id_tipo = t.id_tipo
+        LEFT JOIN (
+            SELECT 
+                id_evento,
+                COUNT(*) AS total_presencas
+            FROM presenca
+            GROUP BY id_evento
+        ) pc ON pc.id_evento = e.id_evento
+        WHERE e.id_usuario = :id_usuario
+        ORDER BY e.data_evento DESC, e.horario_evento DESC
+    ";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute([':id_usuario' => $id_usuario_logado]);
     $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    foreach ($eventos as $evento) {
+        $presencasPorEvento[(int)$evento['id_evento']] = [];
+    }
+
+    if (!empty($eventos)) {
+        $idsEventos = array_map('intval', array_column($eventos, 'id_evento'));
+        $placeholders = implode(',', array_fill(0, count($idsEventos), '?'));
+
+        $sqlPresencas = "
+            SELECT 
+                p.id_evento,
+                u.id_usuario,
+                u.username,
+                u.nome_usuario
+            FROM presenca p
+            INNER JOIN usuario u ON p.id_usuario = u.id_usuario
+            WHERE p.id_evento IN ($placeholders)
+            ORDER BY u.username ASC, u.nome_usuario ASC
+        ";
+
+        $stmtPresencas = $conn->prepare($sqlPresencas);
+        $stmtPresencas->execute($idsEventos);
+        $presencas = $stmtPresencas->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($presencas as $presenca) {
+            $idEventoPresenca = (int)$presenca['id_evento'];
+
+            $nomeBase = $presenca['username'] ?: $presenca['nome_usuario'] ?: 'Usuário';
+
+            $presencasPorEvento[$idEventoPresenca][] = [
+                'id_usuario' => (int)$presenca['id_usuario'],
+                'username' => $presenca['username'] ?: 'usuario',
+                'nome_usuario' => $presenca['nome_usuario'] ?: $nomeBase,
+                'initials' => gerarIniciaisUsuario($nomeBase)
+            ];
+        }
+    }
+
 } catch (PDOException $e) {
-    die("Erro ao buscar eventos: " . $e->getMessage());
+    die("Erro ao buscar eventos: " . htmlspecialchars($e->getMessage()));
 }
+
+$presencasJson = json_encode(
+    $presencasPorEvento,
+    JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -152,28 +219,19 @@ try {
                     <li>
                         <a href="../controllers/favoritos-process.php">
                             <svg viewBox="0 0 24 24" width="20" height="20">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
                             </svg>
                             Favoritos
                         </a>
                     </li>
 
                     <li>
-                        <?php if (!empty($_SESSION['documentos_completos'])): ?>
-                            <a href="../controllers/evento-process.php">
-                                <svg viewBox="0 0 24 24" width="20" height="20">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/>
-                                </svg>
-                                Criar evento
-                            </a>
-                        <?php else: ?>
-                            <a href="../controllers/evento-process.php">
-                                <svg viewBox="0 0 24 24" width="20" height="20">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/>
-                                </svg>
-                                Criar evento
-                            </a>
-                        <?php endif; ?>
+                        <a href="../controllers/evento-process.php">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/>
+                            </svg>
+                            Criar evento
+                        </a>
                     </li>
 
                     <li>
@@ -215,7 +273,7 @@ try {
 <main class="container">
     <div class="page-header">
         <h1 class="page-title">Meus Eventos</h1>
-        <p class="page-subtitle">Gerencie todos os eventos que você criou.</p>
+        <p class="page-subtitle">Gerencie os eventos que você criou e acompanhe quem confirmou presença.</p>
     </div>
 
     <?php if (empty($eventos)): ?>
@@ -237,9 +295,11 @@ try {
         <div class="eventos-list">
             <?php foreach ($eventos as $evento): ?>
                 <?php
+                    $idEvento = (int)$evento['id_evento'];
                     $dataFormatada = date('d/m/Y', strtotime($evento['data_evento']));
                     $horaFormatada = date('H:i', strtotime($evento['horario_evento']));
                     $imagemCapa = getImagemFallback($evento['imagem_evento'] ?? '', $evento['id_tipo']);
+                    $totalPresencas = (int)($evento['total_presencas'] ?? 0);
                 ?>
 
                 <article class="evento-card">
@@ -253,7 +313,22 @@ try {
 
                     <div class="evento-content">
                         <div class="evento-info">
-                            <h3><?= htmlspecialchars($evento['nome_evento'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                            <div class="evento-title-row">
+                                <h3><?= htmlspecialchars($evento['nome_evento'], ENT_QUOTES, 'UTF-8'); ?></h3>
+
+                                <button
+                                    type="button"
+                                    class="presence-pill js-open-presencas-modal"
+                                    data-evento-id="<?= $idEvento; ?>"
+                                    data-evento-nome="<?= htmlspecialchars($evento['nome_evento'], ENT_QUOTES, 'UTF-8'); ?>"
+                                >
+                                    <svg viewBox="0 0 24 24" width="18" height="18">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5C23 14.17 18.33 13 16 13z" fill="currentColor"/>
+                                    </svg>
+
+                                    <?= $totalPresencas; ?> presença<?= $totalPresencas === 1 ? '' : 's'; ?>
+                                </button>
+                            </div>
 
                             <div class="evento-details">
                                 <span>
@@ -276,14 +351,23 @@ try {
 
                         <div class="evento-actions">
                             <a
-                                href="../controllers/detalhe-evento.php?id=<?= (int)$evento['id_evento']; ?>"
+                                href="../controllers/detalhe-evento.php?id=<?= $idEvento; ?>"
                                 class="btn btn-detalhes"
                             >
                                 Ver Detalhes
                             </a>
 
+                            <button
+                                type="button"
+                                class="btn btn-presencas js-open-presencas-modal"
+                                data-evento-id="<?= $idEvento; ?>"
+                                data-evento-nome="<?= htmlspecialchars($evento['nome_evento'], ENT_QUOTES, 'UTF-8'); ?>"
+                            >
+                                Ver Presenças
+                            </button>
+
                             <a
-                                href="../controllers/editar-evento.php?id=<?= (int)$evento['id_evento']; ?>"
+                                href="../controllers/editar-evento.php?id=<?= $idEvento; ?>"
                                 class="btn btn-editar"
                             >
                                 Editar
@@ -292,7 +376,7 @@ try {
                             <a
                                 href="#"
                                 class="btn btn-excluir js-open-delete-modal"
-                                data-delete-url="../controllers/excluir-evento.php?id=<?= (int)$evento['id_evento']; ?>"
+                                data-delete-url="../controllers/excluir-evento.php?id=<?= $idEvento; ?>"
                                 data-evento-nome="<?= htmlspecialchars($evento['nome_evento'], ENT_QUOTES, 'UTF-8'); ?>"
                             >
                                 Excluir
@@ -304,6 +388,33 @@ try {
         </div>
     <?php endif; ?>
 </main>
+
+<div id="modalPresencasEvento" class="modal-overlay" style="display: none;">
+    <div class="modal-box modal-presencas-box">
+        <div class="modal-icon modal-icon-presencas">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5C23 14.17 18.33 13 16 13z"/>
+            </svg>
+        </div>
+
+        <h3>Presenças confirmadas</h3>
+
+        <p>
+            Evento:
+            <strong id="nomeEventoPresencas"></strong>
+        </p>
+
+        <span id="contadorPresencasModal" class="contador-presencas-modal"></span>
+
+        <div id="listaPresencasModal" class="lista-presencas-modal"></div>
+
+        <div class="modal-actions modal-actions-single">
+            <button type="button" id="btnFecharPresencas" class="btn-modal-cancel">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
 
 <div id="modalExcluirEvento" class="modal-overlay" style="display: none;">
     <div class="modal-box">
@@ -333,7 +444,11 @@ try {
     </div>
 </div>
 
+<script>
+    window.PRESENCAS_EVENTOS = <?= $presencasJson ?: '{}' ?>;
+</script>
+
 <script src="../assets/js/menu.js"></script>
-<script src="../assets/js/meus-eventos.js?v=3"></script>
+<script src="../assets/js/meus-eventos.js?v=4"></script>
 </body>
 </html>

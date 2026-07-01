@@ -758,3 +758,194 @@ body.modal-open {
         flex-direction: column;
     }
 }
+
+/* =========================================
+   PRESENÇAS NO CARD
+========================================= */
+
+.evento-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.evento-title-row h3 {
+    margin-bottom: 0;
+}
+
+.presence-pill {
+    border: 1px solid rgba(198, 12, 198, 0.35);
+    background: rgba(198, 12, 198, 0.09);
+    color: #f5f5f5;
+    border-radius: 999px;
+    padding: 8px 13px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.presence-pill svg {
+    color: var(--roxo);
+}
+
+.presence-pill:hover {
+    background: rgba(198, 12, 198, 0.16);
+    border-color: rgba(249, 115, 22, 0.45);
+    transform: translateY(-2px);
+}
+
+.btn-presencas {
+    background: rgba(198, 12, 198, 0.1);
+    color: #f2f2f2;
+    border: 1px solid rgba(198, 12, 198, 0.35);
+}
+
+.btn-presencas:hover {
+    background: rgba(198, 12, 198, 0.17);
+    border-color: rgba(249, 115, 22, 0.45);
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   MODAL DE PRESENÇAS
+========================================= */
+
+.modal-presencas-box {
+    width: min(520px, 100%);
+    text-align: left;
+}
+
+.modal-presencas-box h3,
+.modal-presencas-box p,
+.modal-presencas-box .contador-presencas-modal {
+    text-align: center;
+    display: block;
+}
+
+.modal-icon-presencas {
+    color: var(--roxo);
+    background: rgba(198, 12, 198, 0.1);
+    border-color: rgba(198, 12, 198, 0.35);
+}
+
+.contador-presencas-modal {
+    margin: -12px 0 18px;
+    color: var(--laranja);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.lista-presencas-modal {
+    position: relative;
+    z-index: 1;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 6px;
+    margin-bottom: 24px;
+}
+
+.lista-presencas-modal::-webkit-scrollbar {
+    width: 7px;
+}
+
+.lista-presencas-modal::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 8px;
+}
+
+.lista-presencas-modal::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 8px;
+}
+
+.lista-presencas-modal::-webkit-scrollbar-thumb:hover {
+    background: var(--laranja);
+}
+
+.presenca-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid #242424;
+}
+
+.presenca-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--roxo), var(--laranja));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.presenca-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.presenca-info strong {
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.presenca-info span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.presencas-empty {
+    text-align: center;
+    padding: 26px 18px;
+    border: 1px dashed #333;
+    border-radius: 14px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.presencas-empty strong {
+    color: #fff;
+}
+
+.modal-actions-single {
+    justify-content: center;
+}
+
+.modal-actions-single .btn-modal-cancel {
+    max-width: 220px;
+}
+
+/* =========================================
+   RESPONSIVIDADE DAS PRESENÇAS
+========================================= */
+
+@media (max-width: 768px) {
+    .evento-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .presence-pill {
+        width: 100%;
+        justify-content: center;
+    }
+}
