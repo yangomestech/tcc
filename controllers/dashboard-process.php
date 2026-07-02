@@ -116,20 +116,100 @@ if (empty($eventosProximos)) {
 }
 
 // Componente de renderização das linhas de cards
-function renderRowEventos($titulo, $eventos, $isLogado) {
-    if (empty($eventos)) return;
-    echo "<section class='section'>";
-    echo "<h2>" . htmlspecialchars($titulo) . "</h2>";
-    echo "<div class='cards'>";
-    
-    foreach ($eventos as $ev) {
-        $imagem = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
-        include __DIR__ . '/../views/components/card-evento.php';
-    }
-    
-    echo "</div></section>";
-}
+function renderRowEventos($titulo, $eventos, $logado = false) {
+    // Limita visualmente cada categoria a no máximo 10 eventos
+    $eventos = array_slice($eventos ?? [], 0, 10);
 
+    if (empty($eventos)) {
+        return;
+    }
+
+    $rowId = 'event-row-' . substr(md5($titulo), 0, 8);
+    ?>
+
+    <section class="section event-section">
+        <h2><?= htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') ?></h2>
+
+        <div class="event-row-carousel" data-event-carousel>
+            <button 
+                type="button" 
+                class="row-arrow row-arrow-left" 
+                data-carousel-prev
+                aria-label="Voltar eventos de <?= htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') ?>"
+            >
+                &#10094;
+            </button>
+
+            <div class="cards" id="<?= $rowId ?>">
+                <?php foreach ($eventos as $ev): 
+                    $idEvento = $ev['id_evento'] ?? $ev['id'] ?? '';
+                    $nomeEvento = $ev['nome_evento'] ?? 'Evento sem nome';
+
+                    $imagemEvento = function_exists('getImagemFallback')
+                        ? getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo'] ?? null)
+                        : ($ev['imagem_evento'] ?? '../assets/img/evento-padrao.jpg');
+
+                    $dataEvento = !empty($ev['data_evento'])
+                        ? date('d/m/Y', strtotime($ev['data_evento']))
+                        : 'Data não definida';
+
+                    $horaRaw = $ev['hora_evento'] ?? $ev['horario_evento'] ?? '';
+                    $horaEvento = !empty($horaRaw)
+                        ? date('H:i', strtotime($horaRaw))
+                        : '';
+
+                    $cidade = $ev['cidade'] ?? '';
+                    $estado = $ev['estado'] ?? '';
+
+                    $localizacao = trim($cidade . (!empty($estado) ? ' - ' . $estado : ''));
+                    if ($localizacao === '') {
+                        $localizacao = 'Local não informado';
+                    }
+                ?>
+
+                    <article class="card">
+                        <img 
+                            src="<?= htmlspecialchars($imagemEvento, ENT_QUOTES, 'UTF-8') ?>" 
+                            alt="<?= htmlspecialchars($nomeEvento, ENT_QUOTES, 'UTF-8') ?>"
+                        >
+
+                        <div class="card-content">
+                            <h3><?= htmlspecialchars($nomeEvento, ENT_QUOTES, 'UTF-8') ?></h3>
+
+                            <p class="card-date">
+                                <?= htmlspecialchars($dataEvento, ENT_QUOTES, 'UTF-8') ?>
+                                <?= $horaEvento ? ' às ' . htmlspecialchars($horaEvento, ENT_QUOTES, 'UTF-8') : '' ?>
+                            </p>
+
+                            <p class="card-location">
+                                <?= htmlspecialchars($localizacao, ENT_QUOTES, 'UTF-8') ?>
+                            </p>
+
+                            <a 
+                                href="../controllers/detalhe-evento.php?id=<?= urlencode($idEvento) ?>" 
+                                class="card-action"
+                            >
+                                Ver detalhes
+                            </a>
+                        </div>
+                    </article>
+
+                <?php endforeach; ?>
+            </div>
+
+            <button 
+                type="button" 
+                class="row-arrow row-arrow-right" 
+                data-carousel-next
+                aria-label="Avançar eventos de <?= htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') ?>"
+            >
+                &#10095;
+            </button>
+        </div>
+    </section>
+
+    <?php
+}
 // CORREÇÃO 3: Linha duplicada de fetchAll removida daqui para não quebrar a listagem inferior
 
 require_once __DIR__ . '/../views/dashboard.php';
