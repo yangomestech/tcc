@@ -1096,12 +1096,26 @@ footer {
 
 /* Barra de busca mais bem posicionada */
 .busca-page .search-sympla {
-  width: min(1180px, calc(100% - 48px));
+  width: min(800px, calc(100% - 48px));
   margin: 24px auto 0;
   display: grid;
-  grid-template-columns: minmax(360px, 1fr) 280px;
-  gap: 16px;
+  grid-template-columns: 1fr 240px;
+  gap: 15px;
   align-items: center;
+}
+
+.busca-page .search-box input {
+  height: 45px;
+}
+
+.busca-page .location-box {
+  width: 240px;
+  height: 45px;
+}
+
+.busca-page .location-box span {
+  width: auto;
+  flex: 1;
 }
 
 /* Container dos resultados ocupando melhor a tela */
