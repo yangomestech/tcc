@@ -1,39 +1,101 @@
 <?php
-// A lógica de sessão e redirecionamento FOI MOVIDA para o dashboard-process.php.
-// Aqui apenas preparamos as variáveis visuais com base no status de login.
-$logado = isset($_SESSION['id_usuario']);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+require_once __DIR__ . '/../config/.conexao.php';
+
+// --- Lógica de Cabeçalho e Sessão ---
+$logado = isset($_SESSION['id_usuario']);
 $username = $logado ? ($_SESSION['username'] ?? 'Usuário') : 'Visitante';
 $email = $logado ? ($_SESSION['email_usuario'] ?? 'usuario@beatstreet.com') : '';
 
-// Lógica para pegar as iniciais do usuário (apenas se logado)
 $initials = "";
 if ($logado) {
     $words = explode(" ", trim($username));
-    if (count($words) >= 2) {
-        $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-    } else {
-        $initials = strtoupper(substr($words[0], 0, 2));
+    $initials = count($words) >= 2 ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1)) : strtoupper(substr($words[0], 0, 2));
+}
+
+// --- Lógica de Busca ---
+$searchTerm = isset($_GET['evento']) ? trim($_GET['evento']) : '';
+$cidadeTerm = isset($_GET['cidade']) ? trim($_GET['cidade']) : '';
+
+/**
+ * PROBLEMA 1 RESOLVIDO: Validação robusta de caminhos físicos de imagens
+ */
+function getImagemFallback($caminho, $id_tipo) {
+    if (!empty($caminho)) {
+        $caminho_limpo = ltrim($caminho, './');
+        $caminho_absoluto = __DIR__ . '/../' . $caminho_limpo;
+        
+        // Só retorna o caminho se o arquivo fisicamente existir no disco do servidor
+        if (file_exists($caminho_absoluto)) {
+            return '../' . $caminho_limpo;
+        }
     }
+    
+    // Fallback seguro baseado na categoria do evento caso a imagem não exista ou seja nula
+    switch ((int)$id_tipo) {
+        case 1: return '../assets/img/computador1.jpg';
+        case 2: return '../assets/img/computador2.jpg';
+        case 3: return '../assets/img/computador3.jpg';
+        case 4: return '../assets/img/computador4.jpg';
+        default: return '../assets/img/computador1.jpg';
+    }
+}
+
+try {
+    /**
+     * PROBLEMA 2 RESOLVIDO: Inclusão do filtro 'AND e.data_evento >= CURDATE()' 
+     * para trazer apenas eventos de hoje em diante.
+     */
+    $sql = "SELECT e.*, t.nome_tipo, u.username as organizador
+            FROM evento e
+            INNER JOIN tipo_evento t ON e.id_tipo = t.id_tipo
+            LEFT JOIN usuario u ON e.id_usuario = u.id_usuario
+            WHERE (e.nome_evento LIKE :search OR t.nome_tipo LIKE :search)
+              AND e.data_evento >= CURDATE()";
+    
+    $params = [':search' => '%' . $searchTerm . '%'];
+
+    // Filtro de cidade complementar
+    if (!empty($cidadeTerm) && $cidadeTerm !== 'gps') {
+        $sql .= " AND (e.cidade = :cidade OR e.estado = :cidade)";
+        $params[':cidade'] = $cidadeTerm;
+    }
+
+    // Nova Lógica de Ordenação: 
+    // Prioriza e.nome_evento (peso 1) sobre t.nome_tipo (peso 2)
+    $sql .= " ORDER BY 
+                CASE 
+                    WHEN e.nome_evento LIKE :search THEN 1 
+                    ELSE 2 
+                END ASC,
+                e.data_evento ASC";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    $resultados = [];
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - BeatStreet</title>
+  <title>Resultados para "<?= htmlspecialchars($searchTerm) ?>" - BeatStreet</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/styleDashboard.css">
 </head>
-<body>
+<body class="busca-page">
 
 <header class="header-sympla">
   <a href="../controllers/dashboard-process.php" class="logo">
       BEA<span class="roxo">T</span>S<span class="laranja">T</span>REET
   </a>
-  
   <nav class="nav-links nav-desktop">
-    
     <?php if ($logado): ?>
 <?php if (!empty($_SESSION['documentos_completos'])): ?>
                       <a href="../controllers/evento-process.php" class="nav-item">
@@ -82,7 +144,7 @@ if ($logado) {
                       </a>
                   <?php endif; ?>
               </li>
-              <li><a href="../views/meus-eventos.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
+              <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
               <li class="divider"></li>
               <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" fill="currentColor"/></svg> Suporte</a></li>
               <li class="divider"></li>
@@ -95,23 +157,24 @@ if ($logado) {
         <a href="../views/login.php" class="nav-item" style="font-weight: 600;">Entrar</a>
         <a href="../views/cadastro.php" class="nav-item" style="background: #ff5e00; color: #fff; padding: 8px 20px; border-radius: 24px; font-weight: 600;">Criar conta</a>
     <?php endif; ?>
-
   </nav>
 </header>
 
-<form class="search-sympla" action="../views/busca.php" method="GET">
+<form class="search-sympla" action="busca.php" method="GET">
   <div class="search-box">
-    <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 2a8 8 0 016.32 12.9l4.387 4.387a1 1 0 01-1.414 1.415l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"/></svg>
-    <input type="text" id="inputBusca" name="evento" placeholder="Buscar eventos, artistas..." autocomplete="off">
-    <div id="containerSugestoes" class="search-suggestions"></div>
-  </div>
+  <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 2a8 8 0 016.32 12.9l4.387 4.387a1 1 0 01-1.414 1.415l-4.387-4.387A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"/></svg>
+  
+  <input type="text" id="inputBusca" name="evento" placeholder="Buscar eventos, artistas..." autocomplete="off" value="<?= htmlspecialchars($searchTerm, ENT_QUOTES, 'UTF-8') ?>">
+  
+  <div id="containerSugestoes" class="search-suggestions"></div>
+</div>
 
   <div class="location-box">
     <svg class="location-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
-    <span id="locationSelectedText">Qualquer lugar</span>
-    <input type="hidden" name="cidade" id="cidadeInput" value="">
+    <span id="locationSelectedText"><?= !empty($cidadeTerm) && $cidadeTerm !== 'gps' ? htmlspecialchars($cidadeTerm) : 'Qualquer lugar' ?></span>
+    <input type="hidden" name="cidade" id="cidadeInput" value="<?= htmlspecialchars($cidadeTerm, ENT_QUOTES, 'UTF-8') ?>">
     <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
-
+    
     <ul class="location-menu" id="locationMenu">
       <li class="location-item use-location" data-value="gps">
         <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" fill="currentColor"/></svg>
@@ -129,75 +192,55 @@ if ($logado) {
   <button type="submit" style="display: none;">Buscar</button>
 </form>
 
+<main class="yt-results-container">
+    <h2 class="search-title">Resultados para "<?= htmlspecialchars($searchTerm) ?>"</h2>
 
-<section class="carousel-header">
-  <h2>Eventos em Destaque</h2>
-  <p>As melhores vivências da cultura selecionadas para você</p>
-</section>
-
-<section class="sympla-carousel">
-  <div class="carousel-track">
-    <?php if(!empty($eventosCarrossel)): ?>
-        <?php foreach($eventosCarrossel as $index => $ev): 
-            $imgFallback = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
-            $idEvento = $ev['id_evento'] ?? $ev['id'] ?? '#';
-            $tipoEvento = $ev['nome_tipo'] ?? 'Cultura Urbana';
-            $dataEvento = isset($ev['data_evento']) ? date('d/m/Y', strtotime($ev['data_evento'])) : 'Em breve';
-            $cidadeEvento = $ev['cidade'] ?? 'Vários locais';
+    <?php if (!empty($resultados)): ?>
+        <?php foreach ($resultados as $ev): 
+            $img = getImagemFallback($ev['imagem_evento'] ?? '', $ev['id_tipo']);
+            $idEvento = $ev['id_evento'] ?? $ev['id'];
+            $tipoEvento = $ev['nome_tipo'] ?? 'Evento';
+            $dataEvento = isset($ev['data_evento']) ? date('d/m/Y \à\s H:i', strtotime($ev['data_evento'])) : 'Em breve';
+            $cidade = $ev['cidade'] ?? 'Local a definir';
+            $organizador = $ev['organizador'] ?? 'BeatStreet';
+            $orgInitial = strtoupper(substr($organizador, 0, 1));
         ?>
-        <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-          <a href="../controllers/detalhe-evento.php?id=<?= $idEvento ?>" class="carousel-link">
-            <div class="image-wrapper">
-              <img src="<?= htmlspecialchars($imgFallback) ?>" alt="<?= htmlspecialchars($ev['nome_evento']) ?>">
-              <div class="overlay"></div>
+        <a href="../controllers/detalhe-evento.php?id=<?= $idEvento ?>" class="yt-card">
+            <div class="yt-thumbnail">
+                <img src="<?= htmlspecialchars($img) ?>" alt="Capa do Evento">
+                <span class="yt-badge"><?= htmlspecialchars($tipoEvento) ?></span>
             </div>
-            
-            <span class="badge-tipo"><?= htmlspecialchars($tipoEvento) ?></span>
-            
-            <div class="carousel-caption">
-              <h3><?= htmlspecialchars($ev['nome_evento']) ?></h3>
-              <div class="carousel-meta">
-                <span>
-                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
-                  <?= htmlspecialchars($dataEvento) ?>
-                </span>
-                <span>
-                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" fill="currentColor"/></svg>
-                  <?= htmlspecialchars($cidadeEvento) ?>
-                </span>
-              </div>
+
+            <div class="yt-info">
+                <h3 class="yt-title"><?= htmlspecialchars($ev['nome_evento']) ?></h3>
+                
+                <div class="yt-meta">
+                    <span><?= htmlspecialchars($dataEvento) ?></span>
+                    <span class="yt-meta-dot"></span>
+                    <span><?= htmlspecialchars($cidade) ?></span>
+                </div>
+
+                <div class="yt-organizer">
+                    <div class="yt-organizer-avatar"><?= $orgInitial ?></div>
+                    <span><?= htmlspecialchars($organizador) ?></span>
+                </div>
             </div>
-          </a>
-        </div>
+        </a>
         <?php endforeach; ?>
     <?php else: ?>
-        <p style="text-align:center; color:#888;">Nenhum evento em destaque no momento.</p>
+        <div class="no-results">
+            <svg viewBox="0 0 24 24" width="60" height="60" style="color: #444; margin-bottom: 20px;"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+            <h3>Nenhum evento encontrado</h3>
+            <p>Tente buscar por outros termos, artistas ou categorias.</p>
+        </div>
     <?php endif; ?>
-  </div>
-  
-  <div class="carousel-controls">
-    <button id="prevBtn" class="nav-btn">❮</button>
-    <button id="nextBtn" class="nav-btn">❯</button>
-  </div>
-  <div class="carousel-indicators"></div>
-</section>
+</main>
 
-<?php
-    renderRowEventos("Hoje no BeatStreet", $eventosHoje ?? [], $logado);
-    renderRowEventos("Próximos na sua Região", $eventosProximos ?? [], $logado);
-    renderRowEventos("Batalhas de Rima", $eventosRima ?? [], $logado);
-    renderRowEventos("Batalhas de Dança", $eventosDanca ?? [], $logado);
-    renderRowEventos("Jams Oficiais", $eventosJam ?? [], $logado);
-    renderRowEventos("Poetry Slams", $eventosSlam ?? [], $logado);
-?>
-
-<footer>
-  <p>© 2026 BeatStreet - Todos os direitos reservados</p>
+<footer class="site-footer">
+  <p>© 2026 BeatStreet</p>
 </footer>
 
 <script src="../assets/js/menu.js"></script>
 <script src="../assets/js/app.js"></script>
-<script src="../assets/js/modal-documentos.js"></script>
-<script src="../assets/js/dashboard-categorias-carousel.js"></script>
 </body>
 </html>

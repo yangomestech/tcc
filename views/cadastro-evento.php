@@ -50,9 +50,19 @@ $estilos_danca = $estilos_danca ?? [];
                     <ul class="dropdown-list">
                         <li><a href="../views/usuario.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg> Minha conta</a></li>
                         
-                        <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
+                        <li><a href="../controllers/favoritos-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg> Favoritos</a></li>
                         
-                        <li><a href="../controllers/evento-process.php"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento</a></li>
+<li>
+                  <?php if (!empty($_SESSION['documentos_completos'])): ?>
+                      <a href="../controllers/evento-process.php">
+                          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento
+                      </a>
+                  <?php else: ?>
+                      <a href="#" onclick="abrirModalDocumentos(event)">
+                          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/></svg> Criar evento
+                      </a>
+                  <?php endif; ?>
+              </li>
                         
                         <li><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg> Meus eventos</a></li>
                         
@@ -62,26 +72,36 @@ $estilos_danca = $estilos_danca ?? [];
                         
                         <li class="divider"></li>
                         
-                        <li><a href="../index.php?action=logout" class="logout-link"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/></svg> Sair</a></li>
+                        <li><a href="../controllers/logout-process.php" class="logout-link"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/></svg> Sair</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
+<?php
+// Configura flag para saber se estamos editando
+$is_edit = isset($evento_edit) && !empty($evento_edit);
+$titulo_pagina = $is_edit ? "Editar Evento" : "Cadastrar Novo Evento na Cena";
+?>
+
     <main class="page-wrapper">
         <div class="form-container">
-            <h2>Cadastrar Novo Evento na Cena</h2>
-            <p class="subtitle">Preencha os dados abaixo para divulgar sua Batalha, Jam ou Slam.</p>
+            <h2><?= $titulo_pagina ?></h2>
+            <p class="subtitle">
+                <?= $is_edit ? "Atualize os dados abaixo com as novas informações." : "Preencha os dados abaixo para divulgar sua Batalha, Jam ou Slam." ?>
+            </p>
 
             <?= $mensagem ?>
 
-            <form method="POST" action="../controllers/evento-process.php" enctype="multipart/form-data">
+            <form action="../controllers/evento-process.php" method="POST" enctype="multipart/form-data">
+                
+                <input type="hidden" name="id_evento_edit" value="<?= $is_edit ? htmlspecialchars($evento_edit['id_evento']) : '' ?>">
                 
                 <h3 class="section-title"><span class="num">1</span> Informações Básicas</h3>
                 
                 <div class="form-group">
-                    <label>Imagem de divulgação (Opcional)</label>
+                    <label>Imagem de divulgação (<?= $is_edit ? "Deixe em branco para manter a imagem atual" : "Opcional" ?>)</label>
                     <div class="image-upload-box" id="image-preview-container">
                         <input type="file" id="imagem_evento" name="imagem_evento" accept="image/png, image/jpeg, image/webp">
                         <div class="upload-placeholder" id="upload-text">
@@ -89,13 +109,13 @@ $estilos_danca = $estilos_danca ?? [];
                             <span>Clique ou arraste a imagem do cartaz aqui</span>
                             <small style="color: #666; margin-top: 5px;">Formatos: JPEG, PNG. A imagem se ajustará automaticamente sem distorcer.</small>
                         </div>
-                        <img id="preview-image" class="preview-image" src="" alt="Pré-visualização do Evento">
+                        <img id="preview-image" class="preview-image" src="<?= $is_edit && !empty($evento_edit['imagem_evento']) ? htmlspecialchars($evento_edit['imagem_evento']) : '' ?>" style="<?= $is_edit && !empty($evento_edit['imagem_evento']) ? 'display: block;' : '' ?>" alt="Pré-visualização do Evento">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="nome_evento">Nome do Evento: *</label>
-                    <input type="text" id="nome_evento" name="nome_evento" placeholder="Ex: Batalha da Aldeia" required>
+                    <input type="text" id="nome_evento" name="nome_evento" value="<?= htmlspecialchars($evento_edit['nome_evento'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -103,16 +123,25 @@ $estilos_danca = $estilos_danca ?? [];
                     <select id="id_tipo" name="id_tipo" required>
                         <option value="">Selecione um assunto...</option>
                         <?php foreach ($tipos_evento as $tipo): ?>
-                            <option value="<?= $tipo['id_tipo'] ?>"><?= htmlspecialchars($tipo['nome_tipo']) ?></option>
+                            <option value="<?= $tipo['id_tipo'] ?>" <?= ($is_edit && $evento_edit['id_tipo'] == $tipo['id_tipo']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($tipo['nome_tipo']) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="form-group checkbox-group" id="bloco_estilos_danca">
+                <div class="form-group checkbox-group" id="bloco_estilos_danca" style="display: block;">
                     <label style="display: block; color: #fff; margin-bottom: 10px;">Quais estilos de dança estarão na roda? *</label>
+                    <?php 
+                        $estilos_marcados = $estilos_selecionados ?? [];
+
+                        if (empty($estilos_marcados) && !empty($evento_edit)) {
+                            $estilos_marcados = $estilos_selecionados ?? [];
+                        }
+                    ?>
                     <?php foreach ($estilos_danca as $estilo): ?>
                         <label>
-                            <input type="checkbox" name="estilos[]" class="checkbox-estilo" value="<?= $estilo['id_estilo_danca'] ?>">
+                            <input type="checkbox" name="estilos[]" class="checkbox-estilo" value="<?= $estilo['id_estilo_danca'] ?>" <?= in_array($estilo['id_estilo_danca'], $estilos_marcados) ? 'checked' : '' ?>>
                             <?= htmlspecialchars($estilo['nome_estilo']) ?>
                         </label>
                     <?php endforeach; ?>
@@ -122,29 +151,38 @@ $estilos_danca = $estilos_danca ?? [];
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="data_evento">Data de Início: *</label>
-                        <input type="date" id="data_evento" name="data_evento" required onclick="this.showPicker()">
+                        <input type="date" id="data_evento" name="data_evento" value="<?= htmlspecialchars($evento_edit['data_evento'] ?? '') ?>" required onclick="this.showPicker()">
                     </div>
                     <div class="flex-1">
-                        <label for="horario_evento">Horário de Início: *</label>
-                        <select id="horario_evento" name="horario_evento" required>
-                            </select>
-                    </div>
+    <label for="horario_evento">Horário de Início: *</label>
+    
+    <div class="custom-time-select" id="custom_time_wrapper">
+        <div class="time-select-trigger" id="time_trigger">
+            <span>Selecione a data primeiro...</span>
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>
+        </div>
+        <ul class="time-options-list" id="time_options_list">
+            </ul>
+    </div>
+    
+    <input type="hidden" id="horario_evento" name="horario_evento" data-salvo="<?= $is_edit ? substr($evento_edit['horario_evento'], 0, 5) : '' ?>" value="<?= $is_edit ? substr($evento_edit['horario_evento'], 0, 5) : '' ?>" required>
+</div>
                 </div>
 
                 <h3 class="section-title"><span class="num">3</span> Descrição do Evento</h3>
                 <div class="form-group">
                     <label for="descricao">Conte mais detalhes sobre o evento: *</label>
-                    <textarea id="descricao" name="descricao" class="form-control" placeholder="Descreva as atrações, regras das batalhas, premiação ou como chegar no pico..." required></textarea>
+                    <textarea id="descricao" name="descricao" class="form-control" maxlength="500" required><?= htmlspecialchars($evento_edit['descricao'] ?? '') ?></textarea>
                 </div>
 
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="mc_host">Mestre de Cerimônia (Host):</label>
-                        <input type="text" id="mc_host" name="mc_host" placeholder="Quem vai conduzir?">
+                        <input type="text" id="mc_host" name="mc_host" value="<?= htmlspecialchars($evento_edit['mc_host'] ?? '') ?>">
                     </div>
                     <div class="flex-1">
                         <label for="dj">DJ (Residente ou Convidado):</label>
-                        <input type="text" id="dj" name="dj" placeholder="Quem solta os beats?">
+                        <input type="text" id="dj" name="dj" value="<?= htmlspecialchars($evento_edit['dj'] ?? '') ?>">
                     </div>
                 </div>
 
@@ -152,46 +190,76 @@ $estilos_danca = $estilos_danca ?? [];
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="cep">CEP: *</label>
-                        <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000" required>
+                        <input type="text" id="cep" name="cep" maxlength="9" oninput="this.value = this.value.replace(/\D/g, '')" value="<?= $is_edit ? htmlspecialchars($evento_edit['cep'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-1">
                         <label for="estado">Estado (UF): *</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP" required>
+                        <input type="text" id="estado" name="estado" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')" maxlength="2" value="<?= $is_edit ? htmlspecialchars($evento_edit['estado'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-2">
                         <label for="cidade">Cidade: *</label>
-                        <input type="text" id="cidade" name="cidade" required>
+                        <input type="text" id="cidade" name="cidade" value="<?= $is_edit ? htmlspecialchars($evento_edit['cidade'] ?? '') : '' ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group row-flex">
                     <div class="flex-2">
                         <label for="rua">Rua / Logradouro: *</label>
-                        <input type="text" id="rua" name="rua" required>
+                        <input type="text" id="rua" name="rua" value="<?= $is_edit ? htmlspecialchars($evento_edit['rua'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-1">
                         <label for="numero">Número: *</label>
-                        <input type="text" id="numero" name="numero" placeholder="Ex: S/N" required>
+                        <input type="text" id="numero" name="numero" value="<?= $is_edit ? htmlspecialchars($evento_edit['numero'] ?? '') : '' ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group row-flex">
                     <div class="flex-1">
                         <label for="bairro">Bairro: *</label>
-                        <input type="text" id="bairro" name="bairro" required>
+                        <input type="text" id="bairro" name="bairro" value="<?= $is_edit ? htmlspecialchars($evento_edit['bairro'] ?? '') : '' ?>" required>
                     </div>
                     <div class="flex-1">
                         <label for="complemento">Complemento (Opcional):</label>
-                        <input type="text" id="complemento" name="complemento" placeholder="Praça, Pista de Skate...">
+                        <input type="text" id="complemento" name="complemento" value="<?= $is_edit ? htmlspecialchars($evento_edit['complemento'] ?? '') : '' ?>">
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Publicar Evento</button>
-            </form>
+                <div class="form-actions" style="display: flex; gap: 15px; margin-top: 30px;">
+    <button type="submit" name="action" value="<?= $is_edit ? 'update' : 'create' ?>" class="btn-submit" style="flex: 1;">
+        <?= $is_edit ? "Salvar Alterações" : "Publicar Evento" ?>
+    </button>
+    
+    <?php if ($is_edit): ?>
+        <button type="button" class="btn-delete" onclick="confirmarExclusao(<?= $evento_edit['id_evento'] ?>)">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/></svg>
+            Excluir Evento
+        </button>
+    <?php endif; ?>
+</div>
+</form> 
+<?php if ($is_edit): ?>
+<form id="form-delete" action="../controllers/deletar-evento.php" method="POST" style="display: none;">
+    <input type="hidden" name="id_evento" id="delete_id_evento" value="">
+</form>
+
+<div id="modalExclusao" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
         </div>
+        <h3>Excluir Evento?</h3>
+        <p>Esta ação é irreversível. Todas as presenças, favoritos e dados atrelados a este evento serão apagados para sempre.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal-cancel" onclick="fecharModal()">Cancelar</button>
+            <button type="button" class="btn-modal-delete" onclick="executarExclusao(<?= $evento_edit['id_evento'] ?>)">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
     </main>
 
     <script src="../assets/js/menu.js"></script>
     <script src="../assets/js/cadastroEvento.js"></script>
+    <script src="../assets/js/modal-documentos.js"></script>
 </body>
 </html>
