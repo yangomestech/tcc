@@ -1389,11 +1389,9 @@ footer {
   box-shadow: 0 8px 18px rgba(249, 115, 22, 0.25);
 }
 
-/* Setas no estilo do carrossel principal */
 .row-arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
   z-index: 20;
 
   width: 46px;
@@ -1418,10 +1416,78 @@ footer {
   transition: background 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
 }
 
-/* Só fica colorida no hover */
-.row-arrow:hover:not(:disabled) {
+.row-arrow-left {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.row-arrow-right {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.row-arrow-left:hover:not(:disabled) {
   background: linear-gradient(135deg, var(--roxo), var(--laranja));
-  transform: translateY(-50%) scale(1.08);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.row-arrow-right:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--roxo), var(--laranja));
+  transform: translate(50%, -50%) scale(1.08);
+}
+
+.row-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.row-arrow[hidden] {
+  display: none;
+}.row-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+
+  transition: background 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.row-arrow-left {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.row-arrow-right {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.row-arrow-left:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--roxo), var(--laranja));
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.row-arrow-right:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--roxo), var(--laranja));
+  transform: translate(50%, -50%) scale(1.08);
 }
 
 .row-arrow:disabled {
@@ -1432,82 +1498,12 @@ footer {
 .row-arrow[hidden] {
   display: none;
 }
-
-.row-arrow-left {
-  left: 14px;
-}
-
-.row-arrow-right {
-  right: 14px;
-}
-
-/* Gradiente escuro nas laterais para a seta ficar bonita */
-.event-row-carousel::before,
-.event-row-carousel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 90px;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.event-row-carousel::before {
-  left: 0;
-  background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0) 100%);
-}
-
-.event-row-carousel::after {
-  right: 0;
-  background: linear-gradient(270deg, #000 0%, rgba(0, 0, 0, 0) 100%);
-}
-
-/* Responsividade */
-@media (max-width: 1500px) {
-  .event-row-carousel .cards {
-    --cards-visible: 4;
-  }
-}
-
-@media (max-width: 1150px) {
-  .event-row-carousel .cards {
-    --cards-visible: 3;
-  }
-}
-
-@media (max-width: 900px) {
-  .event-section {
-    width: calc(100% - 32px);
-  }
-
-  .event-row-carousel .cards {
-    --cards-visible: 2;
-    --cards-gap: 18px;
-  }
-
-  .event-section h2 {
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 580px) {
-  .event-section {
-    width: calc(100% - 24px);
-  }
-
-  .event-row-carousel .cards {
-    --cards-visible: 1;
-    --cards-gap: 16px;
-  }
-
-  .row-arrow {
-    width: 38px;
-    height: 38px;
-    font-size: 18px;
-  }
-
   .event-row-carousel .card img {
     height: 170px;
   }
+
+
+.event-row-carousel::before,
+.event-row-carousel::after {
+  display: none !important;
 }
