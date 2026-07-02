@@ -198,5 +198,6 @@ if ($logado) {
 <script src="../assets/js/menu.js"></script>
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/modal-documentos.js"></script>
+<script src="../assets/js/dashboard-categorias-carousel.js"></script>
 </body>
 </html>
